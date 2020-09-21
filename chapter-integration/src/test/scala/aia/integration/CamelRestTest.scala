@@ -1,15 +1,17 @@
 package aia.integration
 
-import akka.testkit.{ TestProbe, TestKit }
-import akka.actor.{ Props, ActorSystem }
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
 import java.io._
 import java.net.URL
-import concurrent.Await
+
+import akka.actor.{ActorSystem, Props}
 import akka.camel.CamelExtension
-import scala.concurrent.duration._
-import xml.XML
+import akka.testkit.{TestKit, TestProbe}
 import akka.util.Timeout
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpecLike}
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.xml.XML
 
 class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
   with WordSpecLike with BeforeAndAfterAll with MustMatchers {
@@ -34,12 +36,11 @@ class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
       Await.result(activated, 5 seconds)
 
 
-
       val xml = <order>
-                  <customerId>me</customerId>
-                  <productId>Akka in Action</productId>
-                  <number>10</number>
-                </order>
+        <customerId>me</customerId>
+        <productId>Akka in Action</productId>
+        <number>10</number>
+      </order>
 
       val urlConnection = new URL("http://localhost:8181/orderTest")
       val conn = urlConnection.openConnection()
@@ -66,14 +67,12 @@ class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
       reader.close()
 
 
-
       conn.getHeaderField(null) must be("HTTP/1.1 200 OK")
 
       val responseXml = XML.loadString(response.toString)
       val confirm = responseXml \\ "confirm"
       (confirm \\ "id").text must be("1")
       (confirm \\ "status").text must be("received")
-
 
 
       system.stop(consumer)
@@ -96,10 +95,16 @@ class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
       val url = "http://localhost:8181/orderTest"
       val msg = new Order("me", "Akka in Action", 10)
       val xml = <order>
-                  <customerId>{ msg.customerId }</customerId>
-                  <productId>{ msg.productId }</productId>
-                  <number>{ msg.number }</number>
-                </order>
+        <customerId>
+          {msg.customerId}
+        </customerId>
+        <productId>
+          {msg.productId}
+        </productId>
+        <number>
+          {msg.number}
+        </number>
+      </order>
 
       val urlConnection = new URL(url)
       val conn = urlConnection.openConnection()
@@ -177,7 +182,7 @@ class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
 
       //check result
 
-      val ex = the [IOException] thrownBy {
+      val ex = the[IOException] thrownBy {
         conn.getInputStream
       }
       ex.getMessage must be(
@@ -201,7 +206,8 @@ class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
 
 
       val url = "http://localhost:8181/orderTest"
-      val xml = """<order><customerId>customer1</customerId>
+      val xml =
+        """<order><customerId>customer1</customerId>
       <productId>Akka in action</productId>"""
 
       val urlConnection = new URL(url)
@@ -216,7 +222,7 @@ class CamelRestTest extends TestKit(ActorSystem("CamelRestTest"))
       writer.flush()
       //check result
 
-      val ex = the [IOException] thrownBy  {
+      val ex = the[IOException] thrownBy {
         conn.getInputStream
       }
       ex.getMessage must be(

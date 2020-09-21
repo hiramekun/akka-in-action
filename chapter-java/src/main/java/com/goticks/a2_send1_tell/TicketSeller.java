@@ -11,7 +11,9 @@ class TicketSeller extends AbstractActor {
         return Props.create(TicketSeller.class, () -> new TicketSeller());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         private final String event;
         private final int nrTickets;

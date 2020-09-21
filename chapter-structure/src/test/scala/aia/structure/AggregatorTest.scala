@@ -1,17 +1,17 @@
 package aia.structure
 
 import java.util.Date
-import scala.concurrent.duration._
 
-import akka.testkit._
 import akka.actor._
-
+import akka.testkit._
 import org.scalatest._
+
+import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class AggregatorTest
   extends TestKit(ActorSystem("AggregatorTest"))
-  with WordSpecLike with BeforeAndAfterAll {
+    with WordSpecLike with BeforeAndAfterAll {
   val timeout = 2 seconds
 
   protected override def afterAll(): Unit = {

@@ -1,14 +1,13 @@
 package aia.testdriven
 
-import akka.testkit.{ TestKit, ImplicitSender }
-import akka.actor.{ Props, Actor, ActorSystem }
+import akka.actor.{Actor, ActorSystem, Props}
+import akka.testkit.{ImplicitSender, TestKit}
+import akka.util.Timeout
 import org.scalatest.WordSpecLike
 
-import akka.util.Timeout
 import scala.concurrent.Await
-import scala.util.{ Success, Failure }
-
 import scala.language.postfixOps
+import scala.util.{Failure, Success}
 
 
 class EchoActorTest extends TestKit(ActorSystem("testsystem"))
@@ -21,13 +20,14 @@ class EchoActorTest extends TestKit(ActorSystem("testsystem"))
     "Reply with the same message it receives" in {
 
       import akka.pattern.ask
+
       import scala.concurrent.duration._
       implicit val timeout = Timeout(3 seconds)
       implicit val ec = system.dispatcher
       val echo = system.actorOf(Props[EchoActor])
       val future = echo.ask("some message")
       future.onComplete {
-        case Failure(_)   => // 失敗時の制御
+        case Failure(_) => // 失敗時の制御
         case Success(msg) => // 成功時の制御
       }
 

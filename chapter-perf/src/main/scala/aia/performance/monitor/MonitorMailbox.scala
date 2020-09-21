@@ -1,13 +1,6 @@
 package aia.performance.monitor
 
-import akka.actor.{ ActorRef, ActorSystem }
-import akka.dispatch._
-import scala.Some
-import java.util.Queue
-import com.typesafe.config.Config
 import java.util.concurrent.ConcurrentLinkedQueue
-import akka.dispatch.{ MailboxType, MessageQueue, UnboundedMessageQueueSemantics }
-import akka.event.LoggerMessageQueueSemantics
 
 case class MonitorEnvelope(queueSize: Int,
                            receiver: String,
@@ -21,17 +14,15 @@ case class MailboxStatistics(queueSize: Int,
                              exitTime: Long)
 
 
-
-
 class MonitorQueue(val system: ActorSystem)
-    extends MessageQueue
+  extends MessageQueue
     with UnboundedMessageQueueSemantics
     with LoggerMessageQueueSemantics {
   private final val queue = new ConcurrentLinkedQueue[MonitorEnvelope]()
 
 
-
   def numberOfMessages = queue.size
+
   def hasMessages = !queue.isEmpty
 
   def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
@@ -45,7 +36,6 @@ class MonitorQueue(val system: ActorSystem)
   }
 
 
-
   def enqueue(receiver: ActorRef, handle: Envelope): Unit = {
     val env = MonitorEnvelope(queueSize = queue.size() + 1,
       receiver = receiver.toString(),
@@ -53,7 +43,6 @@ class MonitorQueue(val system: ActorSystem)
       handle = handle)
     queue add env
   }
-
 
 
   def dequeue(): Envelope = {
@@ -81,10 +70,9 @@ class MonitorQueue(val system: ActorSystem)
 }
 
 
-
 class MonitorMailboxType(settings: ActorSystem.Settings, config: Config)
-    extends MailboxType 
-    with ProducesMessageQueue[MonitorQueue]{
+  extends MailboxType
+    with ProducesMessageQueue[MonitorQueue] {
 
   final override def create(owner: Option[ActorRef],
                             system: Option[ActorSystem]): MessageQueue = {

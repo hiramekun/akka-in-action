@@ -1,9 +1,8 @@
 package aia.testdriven
 
-import akka.testkit.{ TestKit }
-import org.scalatest.WordSpecLike
 import akka.actor._
-
+import akka.testkit.TestKit
+import org.scalatest.WordSpecLike
 
 
 class Greeter02Test extends TestKit(ActorSystem("testsystem"))
@@ -32,6 +31,7 @@ object Greeter02 {
   def props(listener: Option[ActorRef] = None) =
     Props(new Greeter02(listener))
 }
+
 class Greeter02(listener: Option[ActorRef])
   extends Actor with ActorLogging {
   def receive = {

@@ -1,11 +1,11 @@
 package aia.routing
 
-import scala.concurrent.duration._
-import scala.collection.immutable
-
 import akka.actor._
 import akka.dispatch.Dispatchers
 import akka.routing._
+
+import scala.collection.immutable
+import scala.concurrent.duration._
 
 
 case class PerformanceRoutingMessage(photo: String,
@@ -31,7 +31,7 @@ class GetLicense(pipe: ActorRef, initialServiceTime: FiniteDuration = 0 millis)
       pipe ! msg.copy(
         license = ImageProcessing.getLicense(msg.photo),
         processedBy = Some(id)
-        )
+      )
     }
   }
 }
@@ -39,13 +39,13 @@ class GetLicense(pipe: ActorRef, initialServiceTime: FiniteDuration = 0 millis)
 
 class RedirectActor(pipe: ActorRef) extends Actor {
   println("RedirectActor instance created")
+
   def receive = {
     case msg: AnyRef => {
       pipe ! msg
     }
   }
 }
-
 
 
 class SpeedRouterLogic(minSpeed: Int, normalFlowPath: String, cleanUpPath: String)
@@ -64,7 +64,7 @@ class SpeedRouterLogic(minSpeed: Int, normalFlowPath: String, cleanUpPath: Strin
 
   def findRoutee(routees: immutable.IndexedSeq[Routee], path: String): Routee = {
     val routeeList = routees.flatMap {
-      case routee: ActorRefRoutee    => routees
+      case routee: ActorRefRoutee => routees
       case SeveralRoutees(routeeSeq) => routeeSeq
     }
     val search = routeeList.find { case routee: ActorRefRoutee => routee.ref.path.toString().endsWith(path) }
@@ -75,7 +75,9 @@ class SpeedRouterLogic(minSpeed: Int, normalFlowPath: String, cleanUpPath: Strin
 case class SpeedRouterPool(minSpeed: Int, normalFlow: Props, cleanUp: Props) extends Pool {
 
   def nrOfInstances(sys: ActorSystem): Int = 1
+
   def resizer: Option[Resizer] = None
+
   def supervisorStrategy: SupervisorStrategy = OneForOneStrategy()(SupervisorStrategy.defaultDecider)
 
   override def createRouter(system: ActorSystem): Router = {
@@ -93,8 +95,8 @@ case class SpeedRouterPool(minSpeed: Int, normalFlow: Props, cleanUp: Props) ext
 }
 
 
-
 case class RouteStateOn()
+
 case class RouteStateOff()
 
 class SwitchRouter(normalFlow: ActorRef, cleanUp: ActorRef)
@@ -108,6 +110,7 @@ class SwitchRouter(normalFlow: ActorRef, cleanUp: ActorRef)
       normalFlow ! msg
     }
   }
+
   def off: Receive = {
     case RouteStateOn => context.become(on)
     case RouteStateOff =>
@@ -116,12 +119,11 @@ class SwitchRouter(normalFlow: ActorRef, cleanUp: ActorRef)
       cleanUp ! msg
     }
   }
+
   def receive = {
     case msg: AnyRef => off(msg)
   }
 }
-
-
 
 
 class SwitchRouter2(normalFlow: ActorRef, cleanUp: ActorRef)
@@ -135,6 +137,7 @@ class SwitchRouter2(normalFlow: ActorRef, cleanUp: ActorRef)
       normalFlow ! msg
     }
   }
+
   def off: Receive = {
     case RouteStateOn => context.become(on)
     case RouteStateOff =>
@@ -143,6 +146,7 @@ class SwitchRouter2(normalFlow: ActorRef, cleanUp: ActorRef)
       cleanUp ! msg
     }
   }
+
   def receive = {
     case msg: AnyRef => off(msg)
   }

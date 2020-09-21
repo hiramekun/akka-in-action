@@ -1,16 +1,17 @@
 package aia.state
 
-import akka.agent.Agent
 import akka.actor.ActorSystem
-import concurrent.Await
-import concurrent.duration._
-import akka.util.Timeout
+import akka.agent.Agent
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 //import concurrent.ExecutionContext.Implicits.global
 
 
 case class BookStatistics(val nameBook: String, nrSold: Int)
+
 case class StateBookStatistics(val sequence: Long,
-                            books: Map[String, BookStatistics])
+                               books: Map[String, BookStatistics])
 
 
 class BookStatisticsMgr(system: ActorSystem) {

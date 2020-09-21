@@ -11,15 +11,17 @@ import scala.concurrent.ExecutionContext
 import scala.xml.NodeSeq
 
 class OrderServiceApi(
-  system: ActorSystem, 
-  timeout: Timeout, 
-  val processOrders: ActorRef
-) extends OrderService {
+                       system: ActorSystem,
+                       timeout: Timeout,
+                       val processOrders: ActorRef
+                     ) extends OrderService {
   implicit val requestTimeout = timeout
+
   implicit def executionContext = system.dispatcher
 }
 
 trait OrderService {
+
   import Orders._
   import ProcessOrders._
 
@@ -37,12 +39,16 @@ trait OrderService {
         case result: TrackingOrder =>
           complete(
             <statusResponse>
-              <id>{ result.id }</id>
-              <status>{ result.status }</status>
+              <id>
+                {result.id}
+              </id>
+              <status>
+                {result.status}
+              </status>
             </statusResponse>
           )
-        
-        case result: NoSuchOrder => 
+
+        case result: NoSuchOrder =>
           complete(StatusCodes.NotFound)
       }
     }
@@ -56,17 +62,21 @@ trait OrderService {
           case result: TrackingOrder =>
             complete(
               <confirm>
-                <id>{ result.id }</id>
-                <status>{ result.status }</status>
+                <id>
+                  {result.id}
+                </id>
+                <status>
+                  {result.status}
+                </status>
               </confirm>
             )
-        
+
           case result =>
             complete(StatusCodes.BadRequest)
         }
       }
     }
-  }  
+  }
 
   def toOrder(xml: NodeSeq): Order = {
     val order = xml \\ "order"

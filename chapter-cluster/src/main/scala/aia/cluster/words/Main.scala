@@ -1,11 +1,10 @@
 package aia.cluster
 package words
 
-import com.typesafe.config.ConfigFactory
-import akka.actor.{Props, ActorSystem}
+import aia.cluster.words.JobReceptionist.JobRequest
+import akka.actor.{ActorSystem, Props}
 import akka.cluster.Cluster
-
-import JobReceptionist.JobRequest
+import com.typesafe.config.ConfigFactory
 
 object Main extends App {
   val config = ConfigFactory.load()
@@ -13,7 +12,7 @@ object Main extends App {
 
   println(s"Starting node with roles: ${Cluster(system).selfRoles}")
 
-  if(system.settings.config.getStringList("akka.cluster.roles").contains("master")) {
+  if (system.settings.config.getStringList("akka.cluster.roles").contains("master")) {
     Cluster(system).registerOnMemberUp {
       val receptionist = system.actorOf(Props[JobReceptionist], "receptionist")
       println("Master node is ready.")

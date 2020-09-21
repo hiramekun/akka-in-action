@@ -6,13 +6,17 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
-/** 音楽チケット担当 */
+/**
+ * 音楽チケット担当
+ */
 class MusicSeller extends AbstractActor {
     static public Props props(int offset) {
         return Props.create(MusicSeller.class, () -> new MusicSeller(offset));
     }
 
-    /** チケットのリクエスト・メッセージ */
+    /**
+     * チケットのリクエスト・メッセージ
+     */
     public static class RequestTicket {
         private final int nrTickets;
 
@@ -27,7 +31,9 @@ class MusicSeller extends AbstractActor {
 
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
-    /** チケット残数 */
+    /**
+     * チケット残数
+     */
     private int rest;
 
     public MusicSeller(int offset) {

@@ -1,14 +1,14 @@
 package aia.routing
 
-import scala.concurrent.duration._
-
 import akka.actor._
-import org.scalatest._
 import akka.testkit._
+import org.scalatest._
+
+import scala.concurrent.duration._
 
 class StateRoutingTest
   extends TestKit(ActorSystem("StateRoutingTest"))
-  with WordSpecLike with BeforeAndAfterAll {
+    with WordSpecLike with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
     system.terminate()

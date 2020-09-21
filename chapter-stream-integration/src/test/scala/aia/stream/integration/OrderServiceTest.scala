@@ -10,9 +10,9 @@ import scala.concurrent.duration._
 import scala.xml.NodeSeq
 
 class OrderServiceTest extends WordSpec
-    with Matchers 
-    with OrderService
-    with ScalatestRouteTest {
+  with Matchers
+  with OrderService
+  with ScalatestRouteTest {
 
   val processOrders =
     system.actorOf(Props(new ProcessOrders), "orders")
@@ -29,13 +29,14 @@ class OrderServiceTest extends WordSpec
     }
 
     "return the tracking order for an order that was posted" in {
-      val xmlOrder = 
+      val xmlOrder =
         <order>
           <customerId>customer1</customerId>
           <productId>Akka in action</productId>
-          <number>10</number>
+           
+          <number>10</number>
         </order>
-      
+
       Post("/orders", xmlOrder) ~> routes ~> check {
         status shouldEqual StatusCodes.OK
         val xml = responseAs[NodeSeq]

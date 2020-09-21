@@ -1,18 +1,18 @@
 package aia.structure
 
 import java.util.Date
-import scala.concurrent.duration._
 
 import akka.actor._
-
-import org.scalatest._
 import akka.testkit._
+import org.scalatest._
+
+import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class ScatterGatherTest
   extends TestKit(ActorSystem("ScatterGatherTest"))
-  with WordSpecLike
-  with BeforeAndAfterAll {
+    with WordSpecLike
+    with BeforeAndAfterAll {
 
   val timeout = 2 seconds
 

@@ -8,10 +8,10 @@
         </encoder>
     </appender>
 
-    <logger name="akka" level="INFO" />
-    <logger name="spray" level="INFO" />
+    <logger name="akka" level="INFO"/>
+    <logger name="spray" level="INFO"/>
 
-    <logger name="com.goticks" level="INFO" />
+    <logger name="com.goticks" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

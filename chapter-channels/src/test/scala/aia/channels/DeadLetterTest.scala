@@ -1,15 +1,16 @@
 package aia.channels
 
-import akka.testkit.{ ImplicitSender, TestProbe, TestKit }
-import akka.actor.{ PoisonPill, Props, DeadLetter, ActorSystem }
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
 import java.util.Date
+
+import akka.actor.{ActorSystem, DeadLetter, PoisonPill, Props}
+import akka.testkit.{ImplicitSender, TestKit, TestProbe}
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpecLike}
 
 class DeadLetterTest extends TestKit(ActorSystem("DeadLetterTest"))
   with WordSpecLike with BeforeAndAfterAll with MustMatchers
   with ImplicitSender {
 
-  override def afterAll()  {
+  override def afterAll() {
     system.terminate()
   }
 

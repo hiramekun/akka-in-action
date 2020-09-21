@@ -1,20 +1,17 @@
 package com.goticks
 
-import scala.concurrent.duration._
-import akka.remote.testkit.MultiNodeSpec
-import akka.util.Timeout
-
-import akka.testkit.ImplicitSender
 import akka.actor._
-import TicketSeller._
+import akka.util.Timeout
+import com.goticks.TicketSeller._
+
+import scala.concurrent.duration._
 
 class ClientServerSpecMultiJvmFrontend extends ClientServerSpec
+
 class ClientServerSpecMultiJvmBackend extends ClientServerSpec
 
 class ClientServerSpec extends MultiNodeSpec(ClientServerConfig)
-with STMultiNodeSpec with ImplicitSender {
-
-  import ClientServerConfig._
+  with STMultiNodeSpec with ImplicitSender {
 
   val backendNode = node(backend)
 
@@ -43,7 +40,7 @@ with STMultiNodeSpec with ImplicitSender {
         val actorRef = expectMsgPF() {
           case ActorIdentity(`path`, Some(ref)) => ref
         }
-        
+
         import BoxOffice._
 
         actorRef ! CreateEvent("RHCP", 20000)

@@ -1,12 +1,12 @@
 package aia.routing
 
 import akka.actor._
-import org.scalatest._
 import akka.testkit._
+import org.scalatest._
 
 class RouteSlipTest
   extends TestKit(ActorSystem("RouteSlipTest"))
-  with WordSpecLike with BeforeAndAfterAll {
+    with WordSpecLike with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
     system.terminate()
@@ -26,7 +26,6 @@ class RouteSlipTest
         hasNavigation = false,
         hasParkingSensors = false)
       probe.expectMsg(defaultCar)
-
 
 
       val fullOrder = new Order(Seq(

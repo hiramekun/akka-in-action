@@ -1,13 +1,10 @@
 package aia.persistence
 
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 class ShopperSpec extends PersistenceSpec(ActorSystem("test"))
-    with PersistenceCleanup {
+  with PersistenceCleanup {
 
   val shopperId = 21L
   val shopperName = s"$shopperId"
@@ -19,9 +16,9 @@ class ShopperSpec extends PersistenceSpec(ActorSystem("test"))
 
   val expectedTotalSpend = Wallet.AmountSpent(
     (macPro.unitPrice * macPro.number) +
-    (displays.unitPrice * displays.number) +
-    (appleMouse.unitPrice * appleMouse.number) +
-    (appleKeyboard.unitPrice * appleKeyboard.number)
+      (displays.unitPrice * displays.number) +
+      (appleMouse.unitPrice * appleMouse.number) +
+      (appleKeyboard.unitPrice * appleKeyboard.number)
   )
 
   val dWave = Item("D-Wave One", 1, BigDecimal(14999999.99))
@@ -51,7 +48,7 @@ class ShopperSpec extends PersistenceSpec(ActorSystem("test"))
       system.eventStream.subscribe(probe.ref, classOf[Wallet.Paid])
 
       val shopper = system.actorOf(Shopper.props(shopperId), shopperName)
-      shopper ! Basket.Add(appleMouse,shopperId)
+      shopper ! Basket.Add(appleMouse, shopperId)
       shopper ! Basket.GetItems(shopperId)
       expectMsg(Items(displays, macPro, appleMouse))
       shopper ! Shopper.PayBasket(shopperId)

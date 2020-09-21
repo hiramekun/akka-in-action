@@ -12,7 +12,9 @@ public class BoxOffice extends AbstractActor {
         return Props.create(BoxOffice.class, () -> new BoxOffice(boxOffice));
     }
 
-    /** 注文完了メッセージ */
+    /**
+     * 注文完了メッセージ
+     */
     public static class OrderCompleted {
         private final String message;
 
@@ -25,11 +27,15 @@ public class BoxOffice extends AbstractActor {
         }
     }
 
-    /** 注文 */
+    /**
+     * 注文
+     */
     public interface Order {
     }
 
-    /** スポーツチケットの注文メッセージ */
+    /**
+     * スポーツチケットの注文メッセージ
+     */
     public static class OrderSports implements Order {
         private final int nrTickets;
 
@@ -42,7 +48,9 @@ public class BoxOffice extends AbstractActor {
         }
     }
 
-    /** 音楽チケットの注文メッセージ */
+    /**
+     * 音楽チケットの注文メッセージ
+     */
     public static class OrderMusic implements Order {
         private final int nrTickets;
 
@@ -58,6 +66,7 @@ public class BoxOffice extends AbstractActor {
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
     private static ActorRef ticketSeller;
+
     public BoxOffice(ActorRef ticketSeller) {
         this.ticketSeller = ticketSeller;
     }

@@ -4,11 +4,12 @@ import akka.actor._
 
 object LocalShoppers {
   def props = Props(new LocalShoppers)
+
   def name = "local-shoppers"
 }
 
 class LocalShoppers extends Actor
-    with ShopperLookup {
+  with ShopperLookup {
   def receive = forwardToShopper
 }
 

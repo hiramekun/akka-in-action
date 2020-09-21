@@ -1,21 +1,19 @@
 package com.goticks
 
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-
 import akka.actor._
 import akka.event.LoggingAdapter
-import akka.pattern.ask
-import akka.util.Timeout
-
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
+import akka.pattern.ask
+import akka.util.Timeout
+
+import scala.concurrent.ExecutionContext
 
 trait RestApi extends BoxOfficeApi
-    with EventMarshalling {
+  with EventMarshalling {
+
   import StatusCodes._
 
   def routes: Route = eventsRoute ~ eventRoute ~ ticketsRoute
@@ -31,6 +29,7 @@ trait RestApi extends BoxOfficeApi
         }
       }
     }
+
   def eventRoute =
     pathPrefix("events" / Segment) { event =>
       pathEndOrSingleSlash {
@@ -45,18 +44,18 @@ trait RestApi extends BoxOfficeApi
             }
           }
         } ~
-        get {
-          // GET /events/:event
-          onSuccess(getEvent(event)) {
-            _.fold(complete(NotFound))(e => complete(OK, e))
+          get {
+            // GET /events/:event
+            onSuccess(getEvent(event)) {
+              _.fold(complete(NotFound))(e => complete(OK, e))
+            }
+          } ~
+          delete {
+            // DELETE /events/:event
+            onSuccess(cancelEvent(event)) {
+              _.fold(complete(NotFound))(e => complete(OK, e))
+            }
           }
-        } ~
-        delete {
-          // DELETE /events/:event
-          onSuccess(cancelEvent(event)) {
-            _.fold(complete(NotFound))(e => complete(OK, e))
-          }
-        }
       }
     }
 
@@ -67,7 +66,7 @@ trait RestApi extends BoxOfficeApi
           // POST /events/:event/tickets
           entity(as[TicketRequest]) { request =>
             onSuccess(requestTickets(event, request.tickets)) { tickets =>
-              if(tickets.entries.isEmpty) complete(NotFound)
+              if (tickets.entries.isEmpty) complete(NotFound)
               else complete(Created, tickets)
             }
           }
@@ -77,11 +76,15 @@ trait RestApi extends BoxOfficeApi
 }
 
 trait BoxOfficeApi {
+
   import BoxOffice._
+
   def log: LoggingAdapter
+
   def createBoxOffice(): ActorRef
 
   implicit def executionContext: ExecutionContext
+
   implicit def requestTimeout: Timeout
 
   lazy val boxOffice = createBoxOffice()

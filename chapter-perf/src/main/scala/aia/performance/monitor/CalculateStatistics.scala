@@ -1,6 +1,6 @@
 package aia.performance.monitor
 
-import concurrent.duration.Duration
+import scala.concurrent.duration.Duration
 
 case class StatisticsSummary(actorId: String,
                              entryTime: Long,
@@ -14,9 +14,9 @@ case class StatisticsSummary(actorId: String,
 object CalculateStatistics {
 
   def getSummaries(
-    startTimePeriod: Long, period: Duration,
-    groupedMailbox: Map[String, List[MailboxStatistics]],
-    groupedActor: Map[String, List[ActorStatistics]]): Seq[StatisticsSummary] = {
+                    startTimePeriod: Long, period: Duration,
+                    groupedMailbox: Map[String, List[MailboxStatistics]],
+                    groupedActor: Map[String, List[ActorStatistics]]): Seq[StatisticsSummary] = {
 
     val mailSummaries = groupedMailbox.map {
       case (actorId, listEvents) => {
@@ -99,7 +99,6 @@ object CalculateStatistics {
           else 0)
     }
   }
-
 
 
   case class MailboxSummary(maxQueueLength: Int,

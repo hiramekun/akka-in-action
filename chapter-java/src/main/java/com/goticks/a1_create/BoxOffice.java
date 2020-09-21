@@ -13,19 +13,25 @@ public class BoxOffice extends AbstractActor {
         return Props.create(BoxOffice.class, () -> new BoxOffice());
     }
 
-    /** 初期化メッセージ */
+    /**
+     * 初期化メッセージ
+     */
     public static class Initialize {
         public Initialize() {
         }
     }
 
-    /** シャットダウンメッセージ */
+    /**
+     * シャットダウンメッセージ
+     */
     public static class Shutdown {
         public Shutdown() {
         }
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         public Order() {
         }
@@ -35,15 +41,19 @@ public class BoxOffice extends AbstractActor {
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
 
-    /** 子アクターの生成 */
+    /**
+     * 子アクターの生成
+     */
     private ActorRef createTicketSeller1() {
         // アクターのコンテクストを使ってTicketSellerアクターを作成
         return getContext().actorOf(TicketSeller1.props(), "ticketSeller1");
     }
+
     private ActorRef createTicketSeller2() {
         // アクターのコンテクストを使ってTicketSellerアクターを作成
         return getContext().actorOf(TicketSeller2.props(), "ticketSeller2");
     }
+
     private ActorRef createTicketSeller3() {
         // アクターのコンテクストを使ってTicketSellerアクターを作成
         return getContext().actorOf(TicketSeller3.props(), "ticketSeller3");

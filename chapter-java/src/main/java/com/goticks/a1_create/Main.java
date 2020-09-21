@@ -2,10 +2,11 @@ package com.goticks.a1_create;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import com.goticks.a1_create.BoxOffice.Initialize;
+import com.goticks.a1_create.BoxOffice.Order;
 import com.typesafe.config.ConfigFactory;
-import scala.concurrent.duration.Duration;
 import scala.concurrent.Await;
-import com.goticks.a1_create.BoxOffice.*;
+import scala.concurrent.duration.Duration;
 
 // アクターの生成
 class Main {

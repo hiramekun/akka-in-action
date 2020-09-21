@@ -1,10 +1,6 @@
 package aia.performance.monitor
 
-import akka.testkit.TestProbe
-import akka.actor.{ Props, Actor, ActorSystem }
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
-import concurrent.duration._
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 class MonitorMailboxTest extends WordSpecLike with BeforeAndAfterAll
   with MustMatchers {

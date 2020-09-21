@@ -1,19 +1,21 @@
 package aia.integration
 
-import akka.testkit.{ ImplicitSender, TestProbe, TestKit }
-import akka.actor.{ Props, ActorSystem }
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
-import akka.camel.{CamelMessage, CamelExtension}
-import concurrent.{ Future, ExecutionContext, Await }
-import scala.concurrent.duration._
-import java.io.{ InputStreamReader, BufferedReader, PrintWriter, File }
-import org.apache.commons.io.FileUtils
-import java.net.{ InetSocketAddress, SocketAddress, ServerSocket, Socket }
-import org.apache.activemq.camel.component.ActiveMQComponent
-import javax.jms.{ Session, DeliveryMode, Connection }
+import java.io.{BufferedReader, File, InputStreamReader, PrintWriter}
+import java.net.Socket
+
+import akka.actor.{ActorSystem, Props}
+import akka.camel.{CamelExtension, CamelMessage}
+import akka.testkit.{ImplicitSender, TestKit, TestProbe}
+import javax.jms.{Connection, DeliveryMode, Session}
 import org.apache.activemq.ActiveMQConnectionFactory
 import org.apache.activemq.broker.BrokerRegistry
-import collection.JavaConversions._
+import org.apache.activemq.camel.component.ActiveMQComponent
+import org.apache.commons.io.FileUtils
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpecLike}
+
+import scala.collection.JavaConversions._
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
   with WordSpecLike with BeforeAndAfterAll with MustMatchers
@@ -27,7 +29,7 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
     }
     //remove active mq data if it exists
     val mqData = new File("activemq-data")
-    if(mqData.exists())
+    if (mqData.exists())
       FileUtils.deleteDirectory(mqData)
   }
 
@@ -45,7 +47,6 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
         Props(new OrderConsumerXml(camelUri, probe.ref)))
 
 
-
       val camelExtention = CamelExtension(system)
       val activated = camelExtention.activationFutureFor(
         consumer)(timeout = 10 seconds, executor = system.dispatcher)
@@ -54,10 +55,16 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
       val msg = new Order("me", "Akka in Action", 10)
       val xml = <order>
-                  <customerId>{ msg.customerId }</customerId>
-                  <productId>{ msg.productId }</productId>
-                  <number>{ msg.number }</number>
-                </order>
+        <customerId>
+          {msg.customerId}
+        </customerId>
+        <productId>
+          {msg.productId}
+        </productId>
+        <number>
+          {msg.number}
+        </number>
+      </order>
       val msgFile = new File(dir, "msg1.xml")
 
       FileUtils.write(msgFile, xml.toString())
@@ -80,10 +87,16 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
       val msg = new Order("me", "Akka in Action", 10)
       val xml = <order>
-                  <customerId>{ msg.customerId }</customerId>
-                  <productId>{ msg.productId }</productId>
-                  <number>{ msg.number }</number>
-                </order>
+        <customerId>
+          {msg.customerId}
+        </customerId>
+        <productId>
+          {msg.productId}
+        </productId>
+        <number>
+          {msg.number}
+        </number>
+      </order>
 
       val xmlStr = xml.toString().replace("\n", "")
       val sock = new Socket("localhost", 8888)
@@ -110,10 +123,16 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
       val msg = new Order("me", "Akka in Action", 10)
       val xml = <order>
-                  <customerId>{ msg.customerId }</customerId>
-                  <productId>{ msg.productId }</productId>
-                  <number>{ msg.number }</number>
-                </order>
+        <customerId>
+          {msg.customerId}
+        </customerId>
+        <productId>
+          {msg.productId}
+        </productId>
+        <number>
+          {msg.number}
+        </number>
+      </order>
 
       val xmlStr = xml.toString().replace("\n", "")
       val sock = new Socket("localhost", 8887)
@@ -141,7 +160,6 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
           "vm:(broker:(tcp://localhost:8899)?persistent=false)"))
 
 
-
       val camelUri = "activemq:queue:xmlTest"
       val consumer = system.actorOf(
         Props(new OrderConsumerXml(camelUri, probe.ref)))
@@ -152,10 +170,16 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
       val msg = new Order("me", "Akka in Action", 10)
       val xml = <order>
-                  <customerId>{ msg.customerId }</customerId>
-                  <productId>{ msg.productId }</productId>
-                  <number>{ msg.number }</number>
-                </order>
+        <customerId>
+          {msg.customerId}
+        </customerId>
+        <productId>
+          {msg.productId}
+        </productId>
+        <number>
+          {msg.number}
+        </number>
+      </order>
 
       sendMQMessage(xml.toString())
       probe.expectMsg(msg)
@@ -179,10 +203,16 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
       for (nr <- 1 until 2) {
         val msg = new Order("me", "Akka in Action", nr)
         val xml = <order>
-                    <customerId>{ msg.customerId }</customerId>
-                    <productId>{ msg.productId }</productId>
-                    <number>{ msg.number }</number>
-                  </order>
+          <customerId>
+            {msg.customerId}
+          </customerId>
+          <productId>
+            {msg.productId}
+          </productId>
+          <number>
+            {msg.number}
+          </number>
+        </order>
         val msgFile = new File(dir, "msg%d.xml".format(nr))
         FileUtils.write(msgFile, xml.toString())
 
@@ -206,10 +236,16 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
       for (nr <- 1 until 2) {
         val msg = new Order("me", "Akka in Action", nr)
         val xml = <order>
-                    <customerId>{ msg.customerId }</customerId>
-                    <productId>{ msg.productId }</productId>
-                    <number>{ msg.number }</number>
-                  </order>
+          <customerId>
+            {msg.customerId}
+          </customerId>
+          <productId>
+            {msg.productId}
+          </productId>
+          <number>
+            {msg.number}
+          </number>
+        </order>
 
         val xmlStr = xml.toString().replace("\n", "")
         ouputWriter.println(xmlStr)
@@ -244,19 +280,25 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
       val msg = new Order("me", "Akka in Action", 10)
       val xml = <order>
-                  <customerId>{ msg.customerId }</customerId>
-                  <productId>{ msg.productId }</productId>
-                  <number>{ msg.number }</number>
-                </order>
+        <customerId>
+          {msg.customerId}
+        </customerId>
+        <productId>
+          {msg.productId}
+        </productId>
+        <number>
+          {msg.number}
+        </number>
+      </order>
 
       val xmlStr = xml.toString().replace("\n", "")
       val probeSend = TestProbe()
-      probeSend.send(producer,xmlStr)
+      probeSend.send(producer, xmlStr)
 
       probe.expectMsg(msg)
 
       val recvMsg = probeSend.expectMsgType[CamelMessage](3.seconds)
-      recvMsg.body.asInstanceOf[String] must be ("<confirm>OK</confirm>")
+      recvMsg.body.asInstanceOf[String] must be("<confirm>OK</confirm>")
 
       system.stop(producer)
       system.stop(consumer)
@@ -295,7 +337,7 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
       implicit val ExecutionContext = system.dispatcher
       val probe = TestProbe()
-      val camelUri ="mina:tcp://localhost:9889?textline=true"
+      val camelUri = "mina:tcp://localhost:9889?textline=true"
       val consumer = system.actorOf(
         Props(new OrderConfirmConsumerXml(camelUri, probe.ref)))
 
@@ -320,6 +362,7 @@ class ConsumerTest extends TestKit(ActorSystem("ConsumerTest"))
 
     }
   }
+
   def sendMQMessage(msg: String): Unit = {
     // Create a ConnectionFactory
     val connectionFactory =

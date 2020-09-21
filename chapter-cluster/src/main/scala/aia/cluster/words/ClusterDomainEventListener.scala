@@ -1,21 +1,20 @@
 package aia.cluster.words
 
-import akka.actor.{ActorLogging, Actor}
-
-import akka.cluster.{MemberStatus, Cluster}
+import akka.actor.{Actor, ActorLogging}
 import akka.cluster.ClusterEvent._
+import akka.cluster.{Cluster, MemberStatus}
 
 class ClusterDomainEventListener extends Actor
-                    with ActorLogging {
+  with ActorLogging {
   Cluster(context.system).subscribe(self, classOf[ClusterDomainEvent])
 
-  def receive ={
+  def receive = {
     case MemberUp(member) =>
       log.info(s"$member UP.")
-    case MemberExited(member)=>
+    case MemberExited(member) =>
       log.info(s"$member EXITED.")
-    case MemberRemoved(member, previousState)=>
-      if(previousState == MemberStatus.Exiting) {
+    case MemberRemoved(member, previousState) =>
+      if (previousState == MemberStatus.Exiting) {
         log.info(s"Member $member Previously gracefully exited, REMOVED.")
       } else {
         log.info(s"$member Previously downed after unreachable, REMOVED.")
@@ -27,6 +26,7 @@ class ClusterDomainEventListener extends Actor
     case state: CurrentClusterState =>
       log.info(s"Current state of the cluster: $state")
   }
+
   override def postStop(): Unit = {
     Cluster(context.system).unsubscribe(self)
     super.postStop()

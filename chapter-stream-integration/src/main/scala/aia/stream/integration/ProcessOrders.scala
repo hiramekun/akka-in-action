@@ -1,9 +1,9 @@
 package aia.stream.integration
 
+import aia.stream.integration.Orders._
 import akka.actor.Actor
 
 import scala.collection.mutable
-import aia.stream.integration.Orders._
 
 object ProcessOrders {
 
@@ -12,9 +12,11 @@ object ProcessOrders {
   case class OrderId(id: Long)
 
   case class NoSuchOrder(id: Long)
+
 }
 
 class ProcessOrders extends Actor {
+
   import ProcessOrders._
 
   val orderList = new mutable.HashMap[Long, TrackingOrder]()

@@ -1,9 +1,11 @@
 package aia.channels
 
-import akka.testkit.{ TestProbe, TestKit }
-import akka.actor.ActorSystem
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
 import java.util.Date
+
+import akka.actor.ActorSystem
+import akka.testkit.{TestKit, TestProbe}
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpecLike}
+
 import scala.concurrent.duration._
 
 class CancelOrder(time: Date,

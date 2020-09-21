@@ -11,7 +11,9 @@ public class TicketSeller1 extends AbstractActor {
         return Props.create(TicketSeller1.class, () -> new TicketSeller1());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         public Order() {
         }
@@ -26,7 +28,7 @@ public class TicketSeller1 extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 // String 型のメッセージを受信した場合
-                .match(String.class, msg-> log.info("received String message: {}", msg))
+                .match(String.class, msg -> log.info("received String message: {}", msg))
                 // Int 型のメッセージを受信した場合
                 .match(Integer.class, msg -> log.info("received Integer message: {}", msg))
                 // String 型、Integer 型以外のメッセージを受信した場合

@@ -11,7 +11,9 @@ public class TicketSeller3 extends AbstractActor {
         return Props.create(TicketSeller3.class, () -> new TicketSeller3());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         public Order() {
         }
@@ -31,17 +33,23 @@ public class TicketSeller3 extends AbstractActor {
                 .build();
     }
 
-    /** String 型の場合 */
+    /**
+     * String 型の場合
+     */
     private void receiveString(String msg) {
         log.info("received String message: {}", msg);
     }
 
-    /** Integer 型の場合 */
+    /**
+     * Integer 型の場合
+     */
     private void receiveInteger(Integer msg) {
         log.info("received Integer message: {}", msg);
     }
 
-    /** それ以外の場合 */
+    /**
+     * それ以外の場合
+     */
     private void receiveAny(Object msg) {
         log.info("received unknown message");
     }

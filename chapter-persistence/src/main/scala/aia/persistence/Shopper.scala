@@ -5,6 +5,7 @@ import akka.actor._
 
 object Shopper {
   def props(shopperId: Long) = Props(new Shopper)
+
   def name(shopperId: Long) = shopperId.toString
 
   trait Command {
@@ -12,11 +13,13 @@ object Shopper {
   }
 
   case class PayBasket(shopperId: Long) extends Command
+
   // for simplicity every shopper got 40k to spend.
   val cash = 40000
 }
 
 class Shopper extends Actor {
+
   import Shopper._
 
   def shopperId = self.path.name.toLong
@@ -34,12 +37,11 @@ class Shopper extends Actor {
 
     case PayBasket(shopperId) => basket ! Basket.GetItems(shopperId)
     case Items(list) => wallet ! Wallet.Pay(list, shopperId)
-    case paid: Wallet.Paid => 
+    case paid: Wallet.Paid =>
       basket ! Basket.Clear(paid.shopperId)
       context.system.eventStream.publish(paid)
   }
 }
-
 
 
 // alternative PayBasket handling:

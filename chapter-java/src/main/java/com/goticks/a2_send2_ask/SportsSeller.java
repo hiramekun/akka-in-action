@@ -6,7 +6,9 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
-/** スポーツチケット担当 */
+/**
+ * スポーツチケット担当
+ */
 class SportsSeller extends AbstractActor {
     static public Props props(int offset) {
         return Props.create(SportsSeller.class, () -> new SportsSeller(offset));
@@ -26,7 +28,9 @@ class SportsSeller extends AbstractActor {
 
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
-    /** チケット残数 */
+    /**
+     * チケット残数
+     */
     private int rest;
 
     public SportsSeller(int offset) {

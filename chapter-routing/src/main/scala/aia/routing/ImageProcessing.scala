@@ -7,6 +7,7 @@ case class Photo(license: String, speed: Int)
 
 object ImageProcessing {
   val dateFormat = new SimpleDateFormat("ddMMyyyy HH:mm:ss.SSS")
+
   def getSpeed(image: String): Option[Int] = {
     val attributes = image.split('|')
     if (attributes.size == 3)
@@ -14,6 +15,7 @@ object ImageProcessing {
     else
       None
   }
+
   def getTime(image: String): Option[Date] = {
     val attributes = image.split('|')
     if (attributes.size == 3)
@@ -21,6 +23,7 @@ object ImageProcessing {
     else
       None
   }
+
   def getLicense(image: String): Option[String] = {
     val attributes = image.split('|')
     if (attributes.size == 3)
@@ -28,6 +31,7 @@ object ImageProcessing {
     else
       None
   }
+
   def createPhotoString(date: Date, speed: Int): String = {
     createPhotoString(date, speed, " ")
   }

@@ -2,15 +2,13 @@ package akka.testkit
 
 
 import java.io.File
-import com.typesafe.config._
-
-import scala.util._
 
 import akka.actor._
-import akka.persistence._
+import com.typesafe.config._
+import org.apache.commons.io.FileUtils
 import org.scalatest._
 
-import org.apache.commons.io.FileUtils
+import scala.util._
 
 abstract class PersistenceSpec(system: ActorSystem) extends TestKit(system)
   with ImplicitSender
@@ -20,6 +18,7 @@ abstract class PersistenceSpec(system: ActorSystem) extends TestKit(system)
   with PersistenceCleanup {
 
   def this(name: String, config: Config) = this(ActorSystem(name, config))
+
   override protected def beforeAll() = deleteStorageLocations()
 
   override protected def afterAll() = {

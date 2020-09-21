@@ -1,9 +1,8 @@
 package aia.config
 
 import akka.actor.ActorSystem
-import org.scalatest.WordSpecLike
 import com.typesafe.config.ConfigFactory
-import org.scalatest.MustMatchers
+import org.scalatest.{MustMatchers, WordSpecLike}
 
 class ConfigTest extends WordSpecLike with MustMatchers {
 

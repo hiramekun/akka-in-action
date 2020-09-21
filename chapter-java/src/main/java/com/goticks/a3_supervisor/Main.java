@@ -2,10 +2,13 @@ package com.goticks.a3_supervisor;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import com.goticks.a3_supervisor.Shop.Initialize;
+import com.goticks.a3_supervisor.Shop.Music;
+import com.goticks.a3_supervisor.Shop.Order;
+import com.goticks.a3_supervisor.Shop.Sports;
 import com.typesafe.config.ConfigFactory;
-import scala.concurrent.duration.Duration;
 import scala.concurrent.Await;
-import com.goticks.a3_supervisor.Shop.*;
+import scala.concurrent.duration.Duration;
 
 class Main {
     public static void main(String args[]) throws Exception {

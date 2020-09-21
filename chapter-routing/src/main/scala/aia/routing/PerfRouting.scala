@@ -20,8 +20,8 @@ class GetLicenseCreator(nrActors: Int, nextStep: ActorRef) extends Actor {
 
   override def preStart(): Unit = {
     super.preStart()
-    createdActors = (0 until  nrActors).map(nr => {
-      context.actorOf(Props(new GetLicense(nextStep)), "GetLicense"+nr)
+    createdActors = (0 until nrActors).map(nr => {
+      context.actorOf(Props(new GetLicense(nextStep)), "GetLicense" + nr)
     })
   }
 
@@ -43,15 +43,15 @@ class GetLicenseCreator2(nrActors: Int, nextStep: ActorRef) extends Actor {
   //restart children
   override def preStart(): Unit = {
     super.preStart()
-    (0 until  nrActors).map(nr => {
-      val child = context.actorOf(Props(new GetLicense(nextStep)), "GetLicense"+nr)
+    (0 until nrActors).map(nr => {
+      val child = context.actorOf(Props(new GetLicense(nextStep)), "GetLicense" + nr)
       context.watch(child)
     })
   }
 
   def receive = {
     case "KillFirst" => {
-      if(!context.children.isEmpty) {
+      if (!context.children.isEmpty) {
         context.children.head ! PoisonPill
       }
     }
@@ -75,7 +75,7 @@ class WrongDynamicRouteeSizer(nrActors: Int, props: Props, router: ActorRef) ext
   //restart children
   override def preStart(): Unit = {
     super.preStart()
-    (0 until  nrChildren).map(nr => createRoutee())
+    (0 until nrChildren).map(nr => createRoutee())
   }
 
   def createRoutee(): Unit = {
@@ -89,7 +89,7 @@ class WrongDynamicRouteeSizer(nrActors: Int, props: Props, router: ActorRef) ext
         //remove
         println("Delete %d children".format(nrChildren - size))
         context.children.take(nrChildren - size).foreach(ref => {
-          println("delete: "+ ref)
+          println("delete: " + ref)
           router ! RemoveRoutee(ActorRefRoutee(ref))
         })
         router ! GetRoutees
@@ -100,13 +100,13 @@ class WrongDynamicRouteeSizer(nrActors: Int, props: Props, router: ActorRef) ext
     }
     case routees: Routees => {
       import collection.JavaConversions._
-      val active = routees.getRoutees.map{
+      val active = routees.getRoutees.map {
         case x: ActorRefRoutee => x.ref.path.toString
         case x: ActorSelectionRoutee => x.selection.pathString
       }
-      println("Active: "+ active)
+      println("Active: " + active)
       val notUsed = context.children.filterNot(routee => active.contains(routee.path.toString))
-      println("Not used: "+ notUsed)
+      println("Not used: " + notUsed)
       notUsed.foreach(context.stop(_))
     }
   }
@@ -127,7 +127,7 @@ class DynamicRouteeSizer(nrActors: Int,
   //restart children
   override def preStart(): Unit = {
     super.preStart()
-    (0 until  nrChildren).map(nr => createRoutee())
+    (0 until nrChildren).map(nr => createRoutee())
   }
 
   def createRoutee(): Unit = {
@@ -155,12 +155,12 @@ class DynamicRouteeSizer(nrActors: Int,
     case routees: Routees => {
       //translate Routees into a actorPath
       import collection.JavaConversions._
-      val active = routees.getRoutees.map{
+      val active = routees.getRoutees.map {
         case x: ActorRefRoutee => x.ref.path.toString
         case x: ActorSelectionRoutee => x.selection.pathString
       }
       //process the routee list
-      for(routee <- context.children) {
+      for (routee <- context.children) {
         val index = active.indexOf(routee.path.toStringWithoutAddress)
         if (index >= 0) {
           active.remove(index)
@@ -171,7 +171,7 @@ class DynamicRouteeSizer(nrActors: Int,
       }
       //active contains the terminated routees
       for (terminated <- active) {
-        val name = terminated.substring(terminated.lastIndexOf("/")+1)
+        val name = terminated.substring(terminated.lastIndexOf("/") + 1)
         val child = context.actorOf(props, name)
         context.watch(child)
       }
@@ -187,7 +187,7 @@ class DynamicRouteeSizer2(nrActors: Int, props: Props, router: ActorRef) extends
   //restart children
   override def preStart(): Unit = {
     super.preStart()
-    (0 until  nrChildren).map(nr => createRoutee())
+    (0 until nrChildren).map(nr => createRoutee())
   }
 
   def createRoutee(): Unit = {
@@ -195,7 +195,7 @@ class DynamicRouteeSizer2(nrActors: Int, props: Props, router: ActorRef) extends
     val selection = context.actorSelection(child.path)
     router ! AddRoutee(ActorSelectionRoutee(selection))
     context.watch(child)
-    println("Add routee "+ child)
+    println("Add routee " + child)
   }
 
   def receive = {
@@ -205,7 +205,7 @@ class DynamicRouteeSizer2(nrActors: Int, props: Props, router: ActorRef) extends
         //remove
         println("Delete %d children".format(currentNumber - size))
         context.children.take(currentNumber - size).foreach(ref => {
-          println("delete: "+ ref)
+          println("delete: " + ref)
           context.stop(ref)
         })
       } else {
@@ -216,8 +216,8 @@ class DynamicRouteeSizer2(nrActors: Int, props: Props, router: ActorRef) extends
     case routees: Routees => {
 
       println("routees " + routees)
-      if(routees.getRoutees.size() < nrChildren) {
-        ( routees.getRoutees.size() until nrChildren).map(nr => createRoutee())
+      if (routees.getRoutees.size() < nrChildren) {
+        (routees.getRoutees.size() until nrChildren).map(nr => createRoutee())
       }
 
     }

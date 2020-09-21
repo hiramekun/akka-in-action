@@ -1,21 +1,20 @@
 package com.goticks
 
 import akka.actor.ActorSystem
-
 import akka.testkit.{ImplicitSender, TestKit}
-
-import org.scalatest.{WordSpecLike, MustMatchers}
+import org.scalatest.{MustMatchers, WordSpecLike}
 
 class TickerSellerSpec extends TestKit(ActorSystem("testTickets"))
-                         with WordSpecLike
-                         with MustMatchers
-                         with ImplicitSender
-                         with StopSystemAfterAll {
+  with WordSpecLike
+  with MustMatchers
+  with ImplicitSender
+  with StopSystemAfterAll {
   "The TicketSeller" must {
     "Sell tickets until they are sold out" in {
       import TicketSeller._
 
-      def mkTickets = (1 to 10).map(i=>Ticket(i)).toVector
+      def mkTickets = (1 to 10).map(i => Ticket(i)).toVector
+
       val event = "RHCP"
       val ticketingActor = system.actorOf(TicketSeller.props(event))
 
@@ -39,7 +38,7 @@ class TickerSellerSpec extends TestKit(ActorSystem("testTickets"))
 
       val firstBatchSize = 10
 
-      def mkTickets = (1 to (10 * firstBatchSize)).map(i=>Ticket(i)).toVector
+      def mkTickets = (1 to (10 * firstBatchSize)).map(i => Ticket(i)).toVector
 
       val event = "Madlib"
       val ticketingActor = system.actorOf(TicketSeller.props(event))

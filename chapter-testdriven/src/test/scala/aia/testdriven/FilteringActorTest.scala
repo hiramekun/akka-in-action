@@ -1,8 +1,8 @@
 package aia.testdriven
 
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.testkit.TestKit
-import akka.actor.{ Actor, Props, ActorRef, ActorSystem }
-import org.scalatest.{MustMatchers, WordSpecLike }
+import org.scalatest.{MustMatchers, WordSpecLike}
 
 class FilteringActorTest extends TestKit(ActorSystem("testsystem"))
   with WordSpecLike
@@ -59,13 +59,18 @@ class FilteringActorTest extends TestKit(ActorSystem("testsystem"))
 object FilteringActor {
   def props(nextActor: ActorRef, bufferSize: Int) =
     Props(new FilteringActor(nextActor, bufferSize))
+
   case class Event(id: Long)
+
 }
 
 class FilteringActor(nextActor: ActorRef,
                      bufferSize: Int) extends Actor {
+
   import FilteringActor._
+
   var lastMessages = Vector[Event]()
+
   def receive = {
     case msg: Event =>
       if (!lastMessages.contains(msg)) {

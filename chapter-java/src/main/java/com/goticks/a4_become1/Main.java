@@ -4,8 +4,8 @@ package com.goticks.a4_become1;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import com.typesafe.config.ConfigFactory;
-import scala.concurrent.duration.Duration;
 import scala.concurrent.Await;
+import scala.concurrent.duration.Duration;
 
 class Main {
     public static void main(String args[]) throws Exception {

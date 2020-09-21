@@ -1,19 +1,16 @@
-import sbt._
-import Keys._
-import com.typesafe.sbt.SbtMultiJvm
-import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.{ MultiJvm }
+
 
 object WordsBuild extends Build {
 
   lazy val buildSettings = Defaults.defaultSettings ++ multiJvmSettings ++ Seq(
-    crossPaths   := false
+    crossPaths := false
   )
 
   lazy val project = Project(
     id = "words-cluster",
     base = file("."),
     settings = buildSettings ++ Project.defaultSettings
-  ) configs(MultiJvm)
+  ) configs (MultiJvm)
 
   lazy val multiJvmSettings = SbtMultiJvm.multiJvmSettings ++ Seq(
     // make sure that MultiJvm test are compiled by the default test compilation

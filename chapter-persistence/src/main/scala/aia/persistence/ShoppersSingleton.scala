@@ -2,14 +2,12 @@ package aia.persistence
 
 
 import akka.actor._
-import akka.cluster.singleton.ClusterSingletonManager
-import akka.cluster.singleton.ClusterSingletonManagerSettings
-import akka.cluster.singleton.ClusterSingletonProxy
-import akka.cluster.singleton.ClusterSingletonProxySettings
+import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings, ClusterSingletonProxy, ClusterSingletonProxySettings}
 import akka.persistence._
 
 object ShoppersSingleton {
   def props = Props(new ShoppersSingleton)
+
   def name = "shoppers-singleton"
 }
 
@@ -41,17 +39,20 @@ class ShoppersSingleton extends Actor {
 }
 
 
-
 object Shoppers {
   def props = Props(new Shoppers)
+
   def name = "shoppers"
 
   sealed trait Event
+
   case class ShopperCreated(shopperId: Long)
+
 }
 
 class Shoppers extends PersistentActor
-    with ShopperLookup {
+  with ShopperLookup {
+
   import Shoppers._
 
   def persistenceId = "shoppers"
@@ -59,9 +60,9 @@ class Shoppers extends PersistentActor
   def receiveCommand = forwardToShopper
 
   override def createAndForward(
-    cmd: Shopper.Command, 
-    shopperId: Long
-  ) = {
+                                 cmd: Shopper.Command,
+                                 shopperId: Long
+                               ) = {
     val shopper = createShopper(shopperId)
     persistAsync(ShopperCreated(shopperId)) { _ =>
       forwardCommand(cmd)(shopper)

@@ -1,16 +1,14 @@
 package aia.routing
 
-import scala.concurrent.duration._
-
 import akka.actor._
-
+import akka.testkit.{TestKit, TestProbe}
 import org.scalatest._
 
-import akka.testkit.{ TestProbe, TestKit }
+import scala.concurrent.duration._
 
 class MsgRoutingTest
   extends TestKit(ActorSystem("MsgRoutingTest"))
-  with WordSpecLike with BeforeAndAfterAll {
+    with WordSpecLike with BeforeAndAfterAll {
 
   override def afterAll() = {
     system.terminate()
@@ -25,7 +23,7 @@ class MsgRoutingTest
         new SpeedRouterPool(50,
           Props(new RedirectActor(normalFlowProbe.ref)),
           Props(new RedirectActor(cleanupProbe.ref)))
-          ))
+      ))
 
       val msg = new Photo(license = "123xyz", speed = 60)
       router ! msg

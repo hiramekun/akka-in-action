@@ -12,25 +12,33 @@ public class BoxOffice extends AbstractActor {
         return Props.create(BoxOffice.class, () -> new BoxOffice());
     }
 
-    /** 初期化メッセージ */
+    /**
+     * 初期化メッセージ
+     */
     public static class Initialize {
         public Initialize() {
         }
     }
 
-    /** シャットダウンメッセージ */
+    /**
+     * シャットダウンメッセージ
+     */
     public static class Shutdown {
         public Shutdown() {
         }
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         public Order() {
         }
     }
 
-    /** 注文完了メッセージ */
+    /**
+     * 注文完了メッセージ
+     */
     public static class OrderCompleted {
         private final String message;
 

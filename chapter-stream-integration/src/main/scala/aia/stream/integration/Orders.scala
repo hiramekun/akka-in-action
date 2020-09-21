@@ -3,15 +3,15 @@ package aia.stream.integration
 import java.nio.file.Path
 
 import akka.NotUsed
-import akka.stream.alpakka.amqp.{AmqpSinkSettings, AmqpSourceSettings}
 import akka.stream.alpakka.amqp.scaladsl.{AmqpSink, AmqpSource}
+import akka.stream.alpakka.amqp.{AmqpSinkSettings, AmqpSourceSettings}
 import akka.stream.alpakka.file.DirectoryChange
 import akka.stream.alpakka.file.scaladsl.DirectoryChangesSource
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.util.ByteString
 
-import scala.xml.XML
 import scala.concurrent.duration._
+import scala.xml.XML
 
 object Orders {
 
@@ -50,12 +50,19 @@ object Orders {
       Flow[Order]
         .map { order =>
           <order>
-            <customerId>{ order.customerId }</customerId>
-            <productId>{ order.productId }</productId>
-            <number>{ order.number }</number>
+            <customerId>
+              {order.customerId}
+            </customerId>
+            <productId>
+              {order.productId}
+            </productId>
+            <number>
+              {order.number}
+            </number>
           </order>
         }
         .map(xml => ByteString(xml.toString))
         .to(AmqpSink.simple(amqpSinkSettings))
   }
+
 }

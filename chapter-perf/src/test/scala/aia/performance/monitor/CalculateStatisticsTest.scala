@@ -1,7 +1,6 @@
 package aia.performance.monitor
 
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
-import concurrent.duration._
+import scala.concurrent.duration._
 
 class CalculateStatisticsTest extends WordSpecLike
   with BeforeAndAfterAll

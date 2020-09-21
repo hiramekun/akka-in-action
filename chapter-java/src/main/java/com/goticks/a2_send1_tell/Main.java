@@ -2,10 +2,11 @@ package com.goticks.a2_send1_tell;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import com.goticks.a2_send1_tell.BoxOffice.Initialize;
+import com.goticks.a2_send1_tell.BoxOffice.Order;
 import com.typesafe.config.ConfigFactory;
-import scala.concurrent.duration.Duration;
 import scala.concurrent.Await;
-import com.goticks.a2_send1_tell.BoxOffice.*;
+import scala.concurrent.duration.Duration;
 
 class Main {
     public static void main(String args[]) throws Exception {

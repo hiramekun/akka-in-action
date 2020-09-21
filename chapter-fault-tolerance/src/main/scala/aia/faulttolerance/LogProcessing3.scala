@@ -1,11 +1,12 @@
 package aia.faulttolerance
 
-import akka.actor._
 import java.io.File
-import akka.actor.SupervisorStrategy.{ Stop, Resume, Restart }
-import akka.actor.OneForOneStrategy
+
+import akka.actor.SupervisorStrategy.{Restart, Resume, Stop}
+import akka.actor.{OneForOneStrategy, _}
+
 import scala.concurrent.duration._
-import language.postfixOps
+import scala.language.postfixOps
 
 package dbstrategy3 {
 
@@ -14,7 +15,7 @@ package dbstrategy3 {
     val system = ActorSystem("logprocessing")
     // propsと依存関係を生成
     val databaseUrl = "http://mydatabase"
-    
+
     val writerProps = Props(new DbWriter(databaseUrl))
     val dbSuperProps = Props(new DbSupervisor(writerProps))
     val logProcSuperProps = Props(
@@ -26,9 +27,8 @@ package dbstrategy3 {
   }
 
 
-
   class FileWatcherSupervisor(sources: Vector[String],
-                               logProcSuperProps: Props)
+                              logProcSuperProps: Props)
     extends Actor {
 
     var fileWatchers: Vector[ActorRef] = sources.map { source =>
@@ -51,7 +51,6 @@ package dbstrategy3 {
   }
 
 
-
   class FileWatcher(sourceUri: String,
                     logProcSupervisor: ActorRef)
     extends Actor with FileWatchingAbilities {
@@ -69,12 +68,12 @@ package dbstrategy3 {
   }
 
 
-
   class LogProcSupervisor(dbSupervisorProps: Props)
     extends Actor {
     override def supervisorStrategy = OneForOneStrategy() {
       case _: CorruptedFileException => Resume
     }
+
     val dbSupervisor = context.actorOf(dbSupervisorProps)
     val logProcProps = Props(new LogProcessor(dbSupervisor))
     val logProcessor = context.actorOf(logProcProps)
@@ -85,10 +84,11 @@ package dbstrategy3 {
   }
 
 
-
   class LogProcessor(dbSupervisor: ActorRef)
     extends Actor with LogParsing {
+
     import LogProcessingProtocol._
+
     def receive = {
       case LogFile(file) =>
         val lines = parse(file)
@@ -101,32 +101,35 @@ package dbstrategy3 {
     override def supervisorStrategy = OneForOneStrategy(
       maxNrOfRetries = 5,
       withinTimeRange = 60 seconds) {
-        case _: DbBrokenConnectionException => Restart
-      }
+      case _: DbBrokenConnectionException => Restart
+    }
+
     val writer = context.actorOf(writerProps)
+
     def receive = {
       case m => writer forward (m)
     }
   }
-
 
 
   class DbSupervisor(writerProps: Props) extends Actor {
     override def supervisorStrategy = OneForOneStrategy() {
       case _: DbBrokenConnectionException => Restart
     }
+
     val writer = context.actorOf(writerProps)
+
     def receive = {
       case m => writer forward (m)
     }
   }
 
 
-
   class DbWriter(databaseUrl: String) extends Actor {
     val connection = new DbCon(databaseUrl)
 
     import LogProcessingProtocol._
+
     def receive = {
       case Line(time, message, messageType) =>
         connection.write(Map('time -> time,
@@ -138,13 +141,15 @@ package dbstrategy3 {
   class DbCon(url: String) {
     /**
      * Writes a map to a database.
+     *
      * @param map the map to write to the database.
      * @throws DbBrokenConnectionException when the connection is broken. It might be back later
-     * @throws DbNodeDownException when the database Node has been removed from the database cluster. It will never work again.
+     * @throws DbNodeDownException         when the database Node has been removed from the database cluster. It will never work again.
      */
-    def write(map: Map[Symbol, Any]):Unit = {
+    def write(map: Map[Symbol, Any]): Unit = {
       //
     }
+
     def close(): Unit = {
       //
     }
@@ -164,7 +169,9 @@ package dbstrategy3 {
 
 
   trait LogParsing {
+
     import LogProcessingProtocol._
+
     // ログファイルの解析。ログファイル内の行から行オブジェクトを作成する
     // ファイルが破損している場合、CorruptedFileExceptionをスローする
     def parse(file: File): Vector[Line] = {
@@ -172,10 +179,15 @@ package dbstrategy3 {
       Vector.empty[Line]
     }
   }
+
   object FileWatcherProtocol {
+
     case class NewFile(file: File, timeAdded: Long)
+
     case class SourceAbandoned(uri: String)
+
   }
+
   trait FileWatchingAbilities {
     def register(uri: String): Unit = {
 
@@ -184,10 +196,13 @@ package dbstrategy3 {
 
 
   object LogProcessingProtocol {
+
     // 新しいログファイル
     case class LogFile(file: File)
+
     // LogProcessorアクターによって解析されるログファイルの行
     case class Line(time: Long, message: String, messageType: String)
+
   }
 
 

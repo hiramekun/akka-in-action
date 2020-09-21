@@ -11,41 +11,51 @@ import akka.pattern.AskTimeoutException;
 import akka.util.Timeout;
 import scala.concurrent.duration.Duration;
 
-import static akka.pattern.PatternsCS.ask;
-
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
+
+import static akka.pattern.PatternsCS.ask;
 
 public class BoxOffice extends AbstractActor {
     static public Props props() {
         return Props.create(BoxOffice.class, () -> new BoxOffice());
     }
 
-    /** 初期化メッセージ */
+    /**
+     * 初期化メッセージ
+     */
     public static class Initialize {
         public Initialize() {
         }
     }
 
-    /** シャットダウンメッセージ */
+    /**
+     * シャットダウンメッセージ
+     */
     public static class Shutdown {
         public Shutdown() {
         }
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         public Order() {
         }
     }
 
-    /** 複数注文メッセージ */
+    /**
+     * 複数注文メッセージ
+     */
     public static class Orders {
         public Orders() {
         }
     }
 
-    /** 注文完了メッセージ */
+    /**
+     * 注文完了メッセージ
+     */
     public static class OrderCompleted {
         private final String message;
 
@@ -63,7 +73,9 @@ public class BoxOffice extends AbstractActor {
     public BoxOffice() {
     }
 
-    /** 複数注文の完了メッセージ */
+    /**
+     * 複数注文の完了メッセージ
+     */
     public static class Result {
         private final OrderCompleted sports;
         private final OrderCompleted music;

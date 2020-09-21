@@ -1,26 +1,24 @@
 package aia.cluster
 package words
 
-import scala.concurrent.duration._
-
+import aia.cluster.words.JobReceptionist._
 import akka.actor.Props
 import akka.cluster.Cluster
 import akka.cluster.ClusterEvent.{CurrentClusterState, MemberUp}
 
-import akka.testkit.ImplicitSender
-import akka.remote.testkit.MultiNodeSpec
-import JobReceptionist._
+import scala.concurrent.duration._
 
 
 class WordsClusterSpecMultiJvmNode1 extends WordsClusterSpec
+
 class WordsClusterSpecMultiJvmNode2 extends WordsClusterSpec
+
 class WordsClusterSpecMultiJvmNode3 extends WordsClusterSpec
+
 class WordsClusterSpecMultiJvmNode4 extends WordsClusterSpec
 
 class WordsClusterSpec extends MultiNodeSpec(WordsClusterSpecConfig)
-with STMultiNodeSpec with ImplicitSender {
-
-  import WordsClusterSpecConfig._
+  with STMultiNodeSpec with ImplicitSender {
 
   def initialParticipants = roles.size
 

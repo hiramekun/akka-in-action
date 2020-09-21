@@ -1,13 +1,13 @@
 package aia.structure
 
 import akka.actor._
-import org.scalatest._
 import akka.testkit._
+import org.scalatest._
 
 class RecipientListTest
   extends TestKit(ActorSystem("RecipientListTest"))
-  with WordSpecLike
-  with BeforeAndAfterAll {
+    with WordSpecLike
+    with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
     system.terminate()

@@ -1,13 +1,10 @@
 package aia.persistence
 
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 class BasketSpec extends PersistenceSpec(ActorSystem("test"))
-    with PersistenceCleanup {
+  with PersistenceCleanup {
 
   val shopperId = 2L
   val macbookPro = Item("Apple Macbook Pro", 1, BigDecimal(2499.99))

@@ -1,6 +1,7 @@
 package aia.routing
 
-import akka.actor.{ Props, ActorRef, Actor }
+import akka.actor.{Actor, ActorRef, Props}
+
 import scala.collection.mutable.ListBuffer
 
 
@@ -9,10 +10,10 @@ object CarOptions extends Enumeration {
 }
 
 case class Order(options: Seq[CarOptions.Value])
+
 case class Car(color: String = "",
                hasNavigation: Boolean = false,
                hasParkingSensors: Boolean = false)
-
 
 
 case class RouteSlipMessage(routeSlip: Seq[ActorRef],
@@ -34,7 +35,6 @@ trait RouteSlip {
     }
   }
 }
-
 
 
 class PaintCar(color: String) extends Actor with RouteSlip {
@@ -65,7 +65,6 @@ class AddParkingSensors() extends Actor with RouteSlip {
 }
 
 
-
 class SlipRouter(endStep: ActorRef) extends Actor with RouteSlip {
   val paintBlack = context.actorOf(
     Props(new PaintCar("black")), "paintBlack")
@@ -85,7 +84,7 @@ class SlipRouter(endStep: ActorRef) extends Actor with RouteSlip {
   }
 
   private def createRouteSlip(options: Seq[CarOptions.Value]):
-      Seq[ActorRef] = {
+  Seq[ActorRef] = {
 
     val routeSlip = new ListBuffer[ActorRef]
     //car needs a color
@@ -93,10 +92,10 @@ class SlipRouter(endStep: ActorRef) extends Actor with RouteSlip {
       routeSlip += paintBlack
     }
     options.foreach {
-      case CarOptions.CAR_COLOR_GRAY  => routeSlip += paintGray
-      case CarOptions.NAVIGATION      => routeSlip += addNavigation
+      case CarOptions.CAR_COLOR_GRAY => routeSlip += paintGray
+      case CarOptions.NAVIGATION => routeSlip += addNavigation
       case CarOptions.PARKING_SENSORS => routeSlip += addParkingSensor
-      case other                      => //do nothing
+      case other => //do nothing
     }
     routeSlip += endStep
     routeSlip

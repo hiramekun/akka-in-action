@@ -1,8 +1,6 @@
 package aia.performance
 
-import akka.actor.{ ActorRef, Actor }
-import concurrent.duration._
-import monitor.StatisticsSummary
+import scala.concurrent.duration._
 
 case class SystemMessage(start: Long = 0, duration: Long = 0, id: String = "")
 
@@ -39,6 +37,7 @@ class ProcessCPURequest(serviceTime: Duration, next: ActorRef) extends Actor {
 
 class PrintMsg extends Actor {
   var receivedStats: Seq[List[StatisticsSummary]] = Seq()
+
   def receive = {
     case "print" => {
       println("!!!!!!PRINT!!!!!!!! nr=%d".format(receivedStats.size))

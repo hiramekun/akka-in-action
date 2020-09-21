@@ -1,8 +1,8 @@
 package aia.testdriven
 
-import org.scalatest.{WordSpecLike, MustMatchers}
-import akka.testkit.TestKit
 import akka.actor._
+import akka.testkit.TestKit
+import org.scalatest.{MustMatchers, WordSpecLike}
 
 //This test is ignored in the BookBuild, it's added to the defaultExcludedNames
 
@@ -33,7 +33,6 @@ class SilentActor01Test extends TestKit(ActorSystem("testsystem"))
   }
 
 }
-
 
 
 class SilentActor extends Actor {

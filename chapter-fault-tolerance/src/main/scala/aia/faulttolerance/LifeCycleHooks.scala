@@ -21,11 +21,9 @@ class LifeCycleHooks extends Actor with ActorLogging {
   }
 
 
-
   override def postStop(): Unit = {
     log.info("postStop")
   }
-
 
 
   override def preRestart(reason: Throwable,
@@ -33,7 +31,6 @@ class LifeCycleHooks extends Actor with ActorLogging {
     log.info(s"preRestart. Reason: $reason when handling message: $message")
     super.preRestart(reason, message)
   }
-
 
 
   override def postRestart(reason: Throwable): Unit = {

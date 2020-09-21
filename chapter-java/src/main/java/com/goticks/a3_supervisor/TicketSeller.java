@@ -4,22 +4,22 @@ import akka.actor.*;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.DeciderBuilder;
-
-import static akka.actor.SupervisorStrategy.resume;
-import static akka.actor.SupervisorStrategy.restart;
-import static akka.actor.SupervisorStrategy.stop;
-import static akka.actor.SupervisorStrategy.escalate;
-
 import scala.concurrent.duration.Duration;
 
-/** チケット販売員 */
+import static akka.actor.SupervisorStrategy.*;
+
+/**
+ * チケット販売員
+ */
 public class TicketSeller extends AbstractActor {
     static public Props props() {
         return Props.create(TicketSeller.class, () -> new TicketSeller());
     }
 
-    /** スポーツチケットのリクエスト・メッセージ */
-    public static class RequestSportsTicket{
+    /**
+     * スポーツチケットのリクエスト・メッセージ
+     */
+    public static class RequestSportsTicket {
         private final int nrTickets;
 
         public RequestSportsTicket(int nrTickets) {
@@ -31,8 +31,10 @@ public class TicketSeller extends AbstractActor {
         }
     }
 
-    /** 音楽チケットのリクエスト・メッセージ */
-    public static class RequestMusicTicket{
+    /**
+     * 音楽チケットのリクエスト・メッセージ
+     */
+    public static class RequestMusicTicket {
         private final int nrTickets;
 
         public RequestMusicTicket(int nrTickets) {
@@ -44,7 +46,9 @@ public class TicketSeller extends AbstractActor {
         }
     }
 
-    /** 例外クラスの定義 */
+    /**
+     * 例外クラスの定義
+     */
     public static class ExceededLimitException extends RuntimeException {
         public ExceededLimitException(String message) {
             super(message);
@@ -71,10 +75,10 @@ public class TicketSeller extends AbstractActor {
                         musicSeller.forward(new MusicSeller.RequestTicket(requestMusicTicket.getNrTickets()),
                                 getContext()))
                 .matchEquals("killSports", msg ->
-                    getContext().stop(sportsSeller)
+                        getContext().stop(sportsSeller)
                 )
                 .match(Terminated.class, t -> t.actor().equals(sportsSeller), t ->
-                    log.info("A charge of sports events has terminated.")
+                        log.info("A charge of sports events has terminated.")
                 )
                 .build();
     }

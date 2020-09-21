@@ -12,7 +12,9 @@ public class TicketSeller2 extends AbstractActor {
         return Props.create(TicketSeller2.class, () -> new TicketSeller2());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         public Order() {
         }

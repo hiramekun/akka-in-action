@@ -1,13 +1,10 @@
 package aia.next
 
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 class BasketSpec extends PersistenceSpec(ActorSystem("test"))
-    with PersistenceCleanup {
+  with PersistenceCleanup {
 
   val shopperId = 5L
   val macbookPro = Item("Apple Macbook Pro", 1, BigDecimal(2499.99))
@@ -27,12 +24,11 @@ class BasketSpec extends PersistenceSpec(ActorSystem("test"))
 
     "return the items in a typesafe way" in {
       import akka.typed._
-      import akka.typed.scaladsl.Actor._
       import akka.typed.scaladsl.AskPattern._
-      import scala.concurrent.Future
+
+      import scala.concurrent.{Await, Future}
       import scala.concurrent.duration._
-      import scala.concurrent.Await
-      
+
       implicit val timeout = akka.util.Timeout(1 second)
 
       val macbookPro =
@@ -46,6 +42,7 @@ class BasketSpec extends PersistenceSpec(ActorSystem("test"))
       sys ! TypedBasket.Add(displays, shopperId)
 
       implicit def scheduler = sys.scheduler
+
       val items: Future[TypedBasket.Items] =
         sys ? (TypedBasket.GetItems(shopperId, _))
 

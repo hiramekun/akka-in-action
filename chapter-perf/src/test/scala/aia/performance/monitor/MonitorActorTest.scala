@@ -1,9 +1,6 @@
 package aia.performance.monitor
 
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
-import akka.testkit.{ TestProbe, TestKit }
-import akka.actor.{ Props, ActorSystem }
-import concurrent.duration._
+import scala.concurrent.duration._
 
 
 class MonitorActorTest extends TestKit(ActorSystem("MonitorActorTest"))

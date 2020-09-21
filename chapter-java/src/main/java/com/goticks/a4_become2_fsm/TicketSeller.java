@@ -2,27 +2,30 @@ package com.goticks.a4_become2_fsm;
 
 
 import akka.actor.AbstractFSMWithStash;
-
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
-import static com.goticks.a4_become2_fsm.State.Break;
-import static com.goticks.a4_become2_fsm.State.Open;
-import static com.goticks.a4_become2_fsm.State.Close;
+import static com.goticks.a4_become2_fsm.State.*;
 
 
-/** 状態 */
+/**
+ * 状態
+ */
 enum State {
     Close, Open, Break
 }
 
-/** データ */
+/**
+ * データ
+ */
 interface Data {
 }
 
 final class StateData implements Data {
-    /** チケット残数 */
+    /**
+     * チケット残数
+     */
     private final int rest;
 
     public StateData(int rest) {
@@ -34,7 +37,9 @@ final class StateData implements Data {
     }
 }
 
-/** チケット販売員 */
+/**
+ * チケット販売員
+ */
 public class TicketSeller extends AbstractFSMWithStash<State, Data> {
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
@@ -119,7 +124,9 @@ public class TicketSeller extends AbstractFSMWithStash<State, Data> {
         return Props.create(TicketSeller.class, () -> new TicketSeller());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         private final String event;
         private final int nrTickets;
@@ -138,25 +145,33 @@ public class TicketSeller extends AbstractFSMWithStash<State, Data> {
         }
     }
 
-    /** オープンメッセージ */
+    /**
+     * オープンメッセージ
+     */
     public static class Open {
         public Open() {
         }
     }
 
-    /** 中断メッセージ */
+    /**
+     * 中断メッセージ
+     */
     public static class Break {
         public Break() {
         }
     }
 
-    /** クローズメッセージ */
+    /**
+     * クローズメッセージ
+     */
     public static class Close {
         public Close() {
         }
     }
 
-    /** イベントの種類 */
+    /**
+     * イベントの種類
+     */
     public static class EventType {
         private final String name;
 

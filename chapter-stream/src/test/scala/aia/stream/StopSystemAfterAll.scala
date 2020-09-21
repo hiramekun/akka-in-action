@@ -1,6 +1,7 @@
 package aia.stream
-import org.scalatest.{ Suite, BeforeAndAfterAll }
+
 import akka.testkit.TestKit
+import org.scalatest.{BeforeAndAfterAll, Suite}
 
 trait StopSystemAfterAll extends BeforeAndAfterAll {
   this: TestKit with Suite =>

@@ -6,13 +6,17 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
-/** チケット販売員 */
+/**
+ * チケット販売員
+ */
 class TicketSeller extends AbstractActor {
     static public Props props() {
         return Props.create(TicketSeller.class, () -> new TicketSeller());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         private final String event;
         private final int nrTickets;
@@ -31,7 +35,9 @@ class TicketSeller extends AbstractActor {
         }
     }
 
-    /** オープンメッセージ */
+    /**
+     * オープンメッセージ
+     */
     public static class Open {
         private final EventType eventType;
 
@@ -44,13 +50,17 @@ class TicketSeller extends AbstractActor {
         }
     }
 
-    /** クローズメッセージ */
+    /**
+     * クローズメッセージ
+     */
     public static class Close {
         public Close() {
         }
     }
 
-    /** イベントの種類 */
+    /**
+     * イベントの種類
+     */
     public static class EventType {
         private final String name;
 
@@ -65,14 +75,16 @@ class TicketSeller extends AbstractActor {
 
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
-    /** チケット残数 */
+    /**
+     * チケット残数
+     */
     private int rest = 10;
 
     final Receive open(final EventType eventType) {
         // オープ状態の振る舞い
         return receiveBuilder()
                 .match(Order.class, order -> {
-                    if(rest >= order.getNrTickets()) {
+                    if (rest >= order.getNrTickets()) {
                         rest -= order.getNrTickets();
                         log.info("order: {}/{}, rest: {}",
                                 order.getEvent(), order.getNrTickets(), rest);

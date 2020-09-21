@@ -1,21 +1,25 @@
 package aia.cluster
 package words
 
-import scala.concurrent.duration._
-
 import akka.actor._
+
+import scala.concurrent.duration._
 
 
 object JobWorker {
   def props = Props(new JobWorker)
 
   case class Work(jobName: String, master: ActorRef)
+
   case class Task(input: List[String], master: ActorRef)
+
   case object WorkLoadDepleted
+
 }
 
 class JobWorker extends Actor
-                   with ActorLogging {
+  with ActorLogging {
+
   import JobMaster._
   import JobWorker._
   import context._
@@ -68,9 +72,9 @@ class JobWorker extends Actor
   def processTask(textPart: List[String]): Map[String, Int] = {
     textPart.flatMap(_.split("\\W+"))
       .foldLeft(Map.empty[String, Int]) {
-      (count, word) =>
-        if (word == "FAIL") throw new RuntimeException("SIMULATED FAILURE!")
-        count + (word -> (count.getOrElse(word, 0) + 1))
-    }
+        (count, word) =>
+          if (word == "FAIL") throw new RuntimeException("SIMULATED FAILURE!")
+          count + (word -> (count.getOrElse(word, 0) + 1))
+      }
   }
 }

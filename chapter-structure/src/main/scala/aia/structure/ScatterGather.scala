@@ -1,11 +1,12 @@
 package aia.structure
 
+import java.text.SimpleDateFormat
 import java.util.Date
-import scala.concurrent.duration._
-import scala.collection.mutable.ListBuffer
 
 import akka.actor._
-import java.text.SimpleDateFormat
+
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.duration._
 
 
 case class PhotoMessage(id: String,
@@ -16,6 +17,7 @@ case class PhotoMessage(id: String,
 
 object ImageProcessing {
   val dateFormat = new SimpleDateFormat("ddMMyyyy HH:mm:ss.SSS")
+
   def getSpeed(image: String): Option[Int] = {
     val attributes = image.split('|')
     if (attributes.size == 3)
@@ -23,6 +25,7 @@ object ImageProcessing {
     else
       None
   }
+
   def getTime(image: String): Option[Date] = {
     val attributes = image.split('|')
     if (attributes.size == 3)
@@ -30,6 +33,7 @@ object ImageProcessing {
     else
       None
   }
+
   def getLicense(image: String): Option[String] = {
     val attributes = image.split('|')
     if (attributes.size == 3)
@@ -37,6 +41,7 @@ object ImageProcessing {
     else
       None
   }
+
   def createPhotoString(date: Date, speed: Int): String = {
     createPhotoString(date, speed, " ")
   }
@@ -56,6 +61,7 @@ class GetSpeed(pipe: ActorRef) extends Actor {
     }
   }
 }
+
 class GetTime(pipe: ActorRef) extends Actor {
   def receive = {
     case msg: PhotoMessage => {
@@ -64,7 +70,6 @@ class GetTime(pipe: ActorRef) extends Actor {
     }
   }
 }
-
 
 
 class RecipientList(recipientList: Seq[ActorRef]) extends Actor {
@@ -82,6 +87,7 @@ class Aggregator(timeout: FiniteDuration, pipe: ActorRef)
 
   val messages = new ListBuffer[PhotoMessage]
   implicit val ec = context.system.dispatcher
+
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
     messages.foreach(self ! _)

@@ -1,7 +1,5 @@
 package aia.performance.monitor
 
-import akka.actor.Actor
-
 case class ActorStatistics(receiver: String,
                            sender: String,
                            entryTime: Long,

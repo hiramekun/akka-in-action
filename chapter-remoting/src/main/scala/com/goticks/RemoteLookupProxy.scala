@@ -1,8 +1,6 @@
 package com.goticks
 
-import akka.actor._
-import akka.actor.ActorIdentity
-import akka.actor.Identify
+import akka.actor.{ActorIdentity, Identify, _}
 
 import scala.concurrent.duration._
 

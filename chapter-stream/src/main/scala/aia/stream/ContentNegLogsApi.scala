@@ -1,56 +1,48 @@
 package aia.stream
 
-import java.nio.file.{ Files, Path, Paths }
-import java.nio.file.StandardOpenOption
 import java.nio.file.StandardOpenOption._
-
-import java.time.ZonedDateTime
-
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.{ Success, Failure }
+import java.nio.file.{Files, Path}
 
 import akka.Done
-import akka.actor._
-import akka.util.ByteString
-
-import akka.stream.{ ActorAttributes, ActorMaterializer, IOResult }
-import akka.stream.scaladsl.{ FileIO, BidiFlow, Flow, Framing, Keep, Sink, Source }
-
-import akka.http.scaladsl.common.EntityStreamingSupport
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
+import akka.stream.scaladsl.{FileIO, Flow, Keep, Source}
+import akka.stream.{ActorMaterializer, IOResult}
+import akka.util.ByteString
 import spray.json._
 
+import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
+
 class ContentNegLogsApi(
-  val logsDir: Path, 
-  val maxLine: Int,
-  val maxJsObject: Int
-)(
-  implicit val executionContext: ExecutionContext, 
-  val materializer: ActorMaterializer
-) extends EventMarshalling {
+                         val logsDir: Path,
+                         val maxLine: Int,
+                         val maxJsObject: Int
+                       )(
+                         implicit val executionContext: ExecutionContext,
+                         val materializer: ActorMaterializer
+                       ) extends EventMarshalling {
   def logFile(id: String) = logsDir.resolve(id)
-  
-  val outFlow = Flow[Event].map { event => 
+
+  val outFlow = Flow[Event].map { event =>
     ByteString(event.toJson.compactPrint)
   }
-  
-  def logFileSource(logId: String) = 
+
+  def logFileSource(logId: String) =
     FileIO.fromPath(logFile(logId))
-  def logFileSink(logId: String) = 
+
+  def logFileSink(logId: String) =
     FileIO.toPath(logFile(logId), Set(CREATE, WRITE, APPEND))
 
   def routes: Route = postRoute ~ getRoute ~ deleteRoute
-  
+
 
   implicit val unmarshaller = EventUnmarshaller.create(maxLine, maxJsObject)
 
-  def postRoute = 
+  def postRoute =
     pathPrefix("logs" / Segment) { logId =>
       pathEndOrSingleSlash {
         post {
@@ -60,36 +52,36 @@ class ContentNegLogsApi(
                 .toMat(logFileSink(logId))(Keep.right)
                 .run()
             ) {
-            // Handling Future result omitted here, done the same as before.
+              // Handling Future result omitted here, done the same as before.
 
               case Success(IOResult(count, Success(Done))) =>
                 complete((StatusCodes.OK, LogReceipt(logId, count)))
               case Success(IOResult(count, Failure(e))) =>
                 complete((
-                  StatusCodes.BadRequest, 
+                  StatusCodes.BadRequest,
                   ParseError(logId, e.getMessage)
                 ))
               case Failure(e) =>
                 complete((
-                  StatusCodes.BadRequest, 
+                  StatusCodes.BadRequest,
                   ParseError(logId, e.getMessage)
                 ))
             }
           }
-        } 
+        }
       }
     }
 
 
   implicit val marshaller = LogEntityMarshaller.create(maxJsObject)
 
-  def getRoute = 
+  def getRoute =
     pathPrefix("logs" / Segment) { logId =>
       pathEndOrSingleSlash {
-        get { 
+        get {
           extractRequest { req =>
-            if(Files.exists(logFile(logId))) {
-              val src = logFileSource(logId) 
+            if (Files.exists(logFile(logId))) {
+              val src = logFileSource(logId)
               complete(Marshal(src).toResponseFor(req))
             } else {
               complete(StatusCodes.NotFound)
@@ -100,11 +92,11 @@ class ContentNegLogsApi(
     }
 
 
-  def deleteRoute = 
+  def deleteRoute =
     pathPrefix("logs" / Segment) { logId =>
       pathEndOrSingleSlash {
         delete {
-          if(Files.deleteIfExists(logFile(logId))) {
+          if (Files.deleteIfExists(logFile(logId))) {
             complete(StatusCodes.OK)
           } else {
             complete(StatusCodes.NotFound)

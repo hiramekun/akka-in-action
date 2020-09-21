@@ -8,19 +8,24 @@ import akka.event.LoggingAdapter;
 import akka.util.Timeout;
 import scala.concurrent.duration.Duration;
 
-import static akka.pattern.PatternsCS.ask;
-import static akka.pattern.PatternsCS.pipe;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import static akka.pattern.PatternsCS.ask;
+import static akka.pattern.PatternsCS.pipe;
 
-/** チケット販売員 */
+
+/**
+ * チケット販売員
+ */
 class TicketSeller extends AbstractActor {
     static public Props props() {
         return Props.create(TicketSeller.class, () -> new TicketSeller());
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         private final String event;
         private final int nrTickets;
@@ -39,8 +44,10 @@ class TicketSeller extends AbstractActor {
         }
     }
 
-    /** 複数チケットの注文メッセージ */
-    public static class RequestMultiTickets{
+    /**
+     * 複数チケットの注文メッセージ
+     */
+    public static class RequestMultiTickets {
         private final Integer sports;
         private final Integer music;
 
@@ -58,7 +65,9 @@ class TicketSeller extends AbstractActor {
         }
     }
 
-    /** 注文完了メッセージ */
+    /**
+     * 注文完了メッセージ
+     */
     public static class OrderCompleted {
         private final String message;
 
@@ -91,7 +100,9 @@ class TicketSeller extends AbstractActor {
                 .build();
     }
 
-    /** スポーツイベントと音楽イベントのチケットを手配 */
+    /**
+     * スポーツイベントと音楽イベントのチケットを手配
+     */
     private void requestMultiTickets(RequestMultiTickets ticketRequests) {
 
         // タイムアウトの設定

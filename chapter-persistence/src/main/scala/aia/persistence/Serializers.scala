@@ -5,6 +5,7 @@ import akka.serialization._
 import spray.json._
 
 class BasketEventSerializer extends Serializer {
+
   import JsonFormats._
 
   val includeManifest: Boolean = false
@@ -27,8 +28,8 @@ class BasketEventSerializer extends Serializer {
 }
 
 
-
 class BasketSnapshotSerializer extends Serializer {
+
   import JsonFormats._
 
   val includeManifest: Boolean = false
@@ -74,13 +75,15 @@ object JsonFormats extends DefaultJsonProtocol {
 
 
   implicit object BasketEventFormat
-      extends RootJsonFormat[Basket.Event] {
+    extends RootJsonFormat[Basket.Event] {
+
     import Basket._
-    val addedId =  JsNumber(1)
-    val removedId =  JsNumber(2)
-    val updatedId =  JsNumber(3)
-    val replacedId =  JsNumber(4)
-    val clearedId =  JsNumber(5)
+
+    val addedId = JsNumber(1)
+    val removedId = JsNumber(2)
+    val updatedId = JsNumber(3)
+    val replacedId = JsNumber(4)
+    val clearedId = JsNumber(5)
 
     def write(event: Event) = {
       event match {
@@ -96,20 +99,21 @@ object JsonFormats extends DefaultJsonProtocol {
           JsArray(clearedId, clearedEventFormat.write(e))
       }
     }
+
     def read(json: JsValue): Basket.Event = {
       json match {
-        case JsArray(Vector(`addedId`,jsEvent)) =>
+        case JsArray(Vector(`addedId`, jsEvent)) =>
           addedEventFormat.read(jsEvent)
-        case JsArray(Vector(`removedId`,jsEvent)) =>
+        case JsArray(Vector(`removedId`, jsEvent)) =>
           removedEventFormat.read(jsEvent)
-        case JsArray(Vector(`updatedId`,jsEvent)) =>
+        case JsArray(Vector(`updatedId`, jsEvent)) =>
           updatedEventFormat.read(jsEvent)
-        case JsArray(Vector(`replacedId`,jsEvent)) =>
+        case JsArray(Vector(`replacedId`, jsEvent)) =>
           replacedEventFormat.read(jsEvent)
-        case JsArray(Vector(`clearedId`,jsEvent)) =>
+        case JsArray(Vector(`clearedId`, jsEvent)) =>
           clearedEventFormat.read(jsEvent)
         case j =>
-         deserializationError("Expected basket event, but got " + j)
+          deserializationError("Expected basket event, but got " + j)
       }
     }
   }

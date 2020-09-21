@@ -2,24 +2,22 @@ package aia.channels
 
 // start with multi-jvm:test-only aia.channels.ReliableProxySampleSpec
 
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
+import akka.actor.{Actor, Props}
 import akka.testkit.ImplicitSender
-import akka.actor.{Props, Actor}
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpecLike}
 
 
 /**
  * Hooks up MultiNodeSpec with ScalaTest
  */
 
-import akka.remote.testkit.MultiNodeSpecCallbacks
-import akka.remote.testkit.MultiNodeConfig
-import akka.remote.testkit.MultiNodeSpec
+import akka.remote.testkit.{MultiNodeConfig, MultiNodeSpec, MultiNodeSpecCallbacks}
 
 trait STMultiNodeSpec
   extends MultiNodeSpecCallbacks
-  with WordSpecLike
-  with MustMatchers
-  with BeforeAndAfterAll {
+    with WordSpecLike
+    with MustMatchers
+    with BeforeAndAfterAll {
 
   override def beforeAll() = multiNodeSpecBeforeAll()
 
@@ -34,21 +32,21 @@ object ReliableProxySampleConfig extends MultiNodeConfig {
 }
 
 class ReliableProxySampleSpecMultiJvmNode1 extends ReliableProxySample
+
 class ReliableProxySampleSpecMultiJvmNode2 extends ReliableProxySample
 
 
-
-
-import akka.remote.transport.ThrottlerTransportAdapter.Direction
-import scala.concurrent.duration._
-import concurrent.Await
 import akka.contrib.pattern.ReliableProxy
+import akka.remote.transport.ThrottlerTransportAdapter.Direction
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 
 class ReliableProxySample
   extends MultiNodeSpec(ReliableProxySampleConfig)
-  with STMultiNodeSpec
-  with ImplicitSender {
+    with STMultiNodeSpec
+    with ImplicitSender {
 
   import ReliableProxySampleConfig._
 
@@ -71,7 +69,7 @@ class ReliableProxySample
         proxy ! "message1"
         expectMsg("message1")
         Await.ready(
-          testConductor.blackhole( client, server, Direction.Both),
+          testConductor.blackhole(client, server, Direction.Both),
           1 second)
 
         echo ! "DirectMessage"
@@ -79,7 +77,7 @@ class ReliableProxySample
         expectNoMsg(3 seconds)
 
         Await.ready(
-          testConductor.passThrough( client, server, Direction.Both),
+          testConductor.passThrough(client, server, Direction.Both),
           1 second)
 
         expectMsg("ProxyMessage")

@@ -3,30 +3,34 @@ package words
 
 import java.net.URLEncoder
 
-import akka.actor._
-import akka.actor.Terminated
+import akka.actor.{Terminated, _}
 
 
 object JobReceptionist {
   def props = Props(new JobReceptionist)
+
   def name = "receptionist"
 
   case class JobRequest(name: String, text: List[String])
 
   sealed trait Response
+
   case class JobSuccess(name: String, map: Map[String, Int]) extends Response
+
   case class JobFailure(name: String) extends Response
 
   case class WordCount(name: String, map: Map[String, Int])
 
   case class Job(name: String, text: List[String], respondTo: ActorRef, jobMaster: ActorRef)
+
 }
 
 class JobReceptionist extends Actor
-                         with ActorLogging
-                         with CreateMaster {
-  import JobReceptionist._
+  with ActorLogging
+  with CreateMaster {
+
   import JobMaster.StartJob
+  import JobReceptionist._
   import context._
 
   override def supervisorStrategy: SupervisorStrategy =
@@ -38,10 +42,10 @@ class JobReceptionist extends Actor
 
 
   def receive = {
-    case jr @ JobRequest(name, text) =>
+    case jr@JobRequest(name, text) =>
       log.info(s"Received job $name")
 
-      val masterName = "master-"+URLEncoder.encode(name, "UTF8")
+      val masterName = "master-" + URLEncoder.encode(name, "UTF8")
       val jobMaster = createMaster(masterName)
 
       val job = Job(name, text, sender, jobMaster)
@@ -67,14 +71,14 @@ class JobReceptionist extends Actor
         log.error(s"Job ${name} failed.")
         val nrOfRetries = retries.getOrElse(name, 0)
 
-        if(maxRetries > nrOfRetries) {
-          if(nrOfRetries == maxRetries -1) {
+        if (maxRetries > nrOfRetries) {
+          if (nrOfRetries == maxRetries - 1) {
             // Simulating that the Job worker will work just before max retries
             val text = failedJob.text.filterNot(_.contains("FAIL"))
             self.tell(JobRequest(name, text), failedJob.respondTo)
           } else self.tell(JobRequest(name, failedJob.text), failedJob.respondTo)
 
-          retries = retries + retries.get(name).map(r=> name -> (r + 1)).getOrElse(name -> 1)
+          retries = retries + retries.get(name).map(r => name -> (r + 1)).getOrElse(name -> 1)
         }
       }
   }
@@ -82,5 +86,6 @@ class JobReceptionist extends Actor
 
 trait CreateMaster {
   def context: ActorContext
+
   def createMaster(name: String) = context.actorOf(JobMaster.props, name)
 }

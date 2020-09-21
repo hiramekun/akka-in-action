@@ -1,10 +1,7 @@
 package aia.persistence.rest
 
-import scala.util.Try
-
-import spray.json._
-
 import aia.persistence._
+import spray.json._
 
 case class ItemNumber(number: Int)
 

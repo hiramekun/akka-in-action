@@ -12,31 +12,41 @@ public class BoxOffice extends AbstractActor {
         return Props.create(BoxOffice.class, () -> new BoxOffice());
     }
 
-    /** 初期化メッセージ */
+    /**
+     * 初期化メッセージ
+     */
     public static class Initialize {
         public Initialize() {
         }
     }
 
-    /** シャットダウンメッセージ */
+    /**
+     * シャットダウンメッセージ
+     */
     public static class Shutdown {
         public Shutdown() {
         }
     }
 
-    /** オープンメッセージ */
+    /**
+     * オープンメッセージ
+     */
     public static class Open {
         public Open() {
         }
     }
 
-    /** クローズメッセージ */
+    /**
+     * クローズメッセージ
+     */
     public static class Close {
         public Close() {
         }
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         private final String event;
         private final int nrTickets;
@@ -55,7 +65,9 @@ public class BoxOffice extends AbstractActor {
         }
     }
 
-    /** 注文完了メッセージ */
+    /**
+     * 注文完了メッセージ
+     */
     public static class OrderCompleted {
         private final String message;
 

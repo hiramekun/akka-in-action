@@ -1,7 +1,6 @@
 package aia.performance.monitor
 
-import akka.actor.{ ActorRef, Actor }
-import concurrent.duration.Duration
+import scala.concurrent.duration.Duration
 
 class MonitorStatisticsActor(period: Duration, processMargin: Long,
                              storeSummaries: ActorRef) extends Actor {

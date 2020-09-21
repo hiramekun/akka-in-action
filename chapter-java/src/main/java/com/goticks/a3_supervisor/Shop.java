@@ -6,25 +6,33 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
-/** 店舗 */
+/**
+ * 店舗
+ */
 class Shop extends AbstractActor {
     static public Props props() {
         return Props.create(Shop.class, () -> new Shop());
     }
 
-    /** 初期化メッセージ */
+    /**
+     * 初期化メッセージ
+     */
     public static class Initialize {
         public Initialize() {
         }
     }
 
-    /** シャットダウンメッセージ */
+    /**
+     * シャットダウンメッセージ
+     */
     public static class Shutdown {
         public Shutdown() {
         }
     }
 
-    /** 注文メッセージ */
+    /**
+     * 注文メッセージ
+     */
     public static class Order {
         private final Product product;
         private final int nrTickets;
@@ -43,17 +51,23 @@ class Shop extends AbstractActor {
         }
     }
 
-    /** 商品リスト */
+    /**
+     * 商品リスト
+     */
     public interface Product {
     }
 
-    /** スポーツチケット */
+    /**
+     * スポーツチケット
+     */
     public static class Sports implements Product {
         public Sports() {
         }
     }
 
-    /** 音楽チケット */
+    /**
+     * 音楽チケット
+     */
     public static class Music implements Product {
         public Music() {
         }

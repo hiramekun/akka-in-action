@@ -1,20 +1,17 @@
 package aia.persistence
 
-import scala.concurrent.duration._
-import scala.concurrent.Future
-import scala.concurrent.Await
 import akka.NotUsed
 import akka.actor._
-import akka.testkit._
-import org.scalatest._
-
-import akka.stream._
-import akka.stream.scaladsl._
 import akka.persistence.query._
 import akka.persistence.query.journal.leveldb.scaladsl._
+import akka.stream._
+import akka.stream.scaladsl._
+import akka.testkit._
 
-class BasketQuerySpec extends PersistenceSpec(ActorSystem("test"))
-     {
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+
+class BasketQuerySpec extends PersistenceSpec(ActorSystem("test")) {
 
   val shopperId = 3L
   val macbookPro = Item("Apple Macbook Pro", 1, BigDecimal(2499.99))
@@ -26,7 +23,6 @@ class BasketQuerySpec extends PersistenceSpec(ActorSystem("test"))
 
   "Querying the journal for a basket" should {
     "return all basket events currently stored" in {
-      import system.dispatcher
       val basket = system.actorOf(Basket.props, Basket.name(shopperId))
       basket ! Basket.Add(macbookPro, shopperId)
       basket ! Basket.Add(displays, shopperId)
@@ -35,26 +31,26 @@ class BasketQuerySpec extends PersistenceSpec(ActorSystem("test"))
       killActors(basket)
 
       implicit val mat = ActorMaterializer()(system)
-      val queries = 
+      val queries =
         PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
           LeveldbReadJournal.Identifier
         )
-      
+
       val src: Source[EventEnvelope, NotUsed] =
         queries.currentEventsByPersistenceId(
           Basket.name(shopperId), 0L, Long.MaxValue)
- 
-      val events: Source[Basket.Event, NotUsed] = 
-        src.map(_.event.asInstanceOf[Basket.Event]) 
+
+      val events: Source[Basket.Event, NotUsed] =
+        src.map(_.event.asInstanceOf[Basket.Event])
 
       val res: Future[Seq[Basket.Event]] = events.runWith(Sink.seq)
-     
-       Await.result(res, 10 seconds) should equal(
-         Vector(
-           Basket.Added(macbookPro),
-           Basket.Added(displays)
-         )
-       )
+
+      Await.result(res, 10 seconds) should equal(
+        Vector(
+          Basket.Added(macbookPro),
+          Basket.Added(displays)
+        )
+      )
     }
   }
 }

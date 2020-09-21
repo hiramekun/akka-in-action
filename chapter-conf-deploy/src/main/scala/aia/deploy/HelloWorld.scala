@@ -1,6 +1,7 @@
 package aia.deploy
 
-import akka.actor.{ActorRef, ActorLogging, Actor}
+import akka.actor.{Actor, ActorLogging, ActorRef}
+
 import scala.concurrent.duration._
 
 
@@ -8,13 +9,12 @@ class HelloWorld extends Actor
   with ActorLogging {
 
   def receive = {
-    case msg: String  =>
+    case msg: String =>
       val hello = "Hello %s".format(msg)
       sender() ! hello
-      log.info("Sent response {}",hello)
+      log.info("Sent response {}", hello)
   }
 }
-
 
 
 class HelloWorldCaller(timer: FiniteDuration, actor: ActorRef)
@@ -33,7 +33,7 @@ class HelloWorldCaller(timer: FiniteDuration, actor: ActorRef)
   }
 
   def receive = {
-    case msg: String  => log.info("received {}",msg)
+    case msg: String => log.info("received {}", msg)
     case tick: TimerTick => actor ! tick.msg
   }
 }

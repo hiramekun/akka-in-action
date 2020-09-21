@@ -11,13 +11,13 @@ val project = Project(
     organization := "manning",
     version := "1.0",
     libraryDependencies ++= Seq(
-    "com.typesafe.akka" %%  "akka-actor"              % akkaVersion,
-    "com.typesafe.akka" %%  "akka-slf4j"              % akkaVersion,
-    "com.typesafe.akka" %%  "akka-remote"             % akkaVersion,
-    "com.typesafe.akka" %%  "akka-multi-node-testkit" % akkaVersion,
-    "com.typesafe.akka" %%  "akka-contrib"            % akkaVersion,
-    "com.typesafe.akka" %%  "akka-testkit"            % akkaVersion  % "test",
-    "org.scalatest"     %%  "scalatest"               % "3.0.0"      % "test"
+      "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+      "com.typesafe.akka" %% "akka-remote" % akkaVersion,
+      "com.typesafe.akka" %% "akka-multi-node-testkit" % akkaVersion,
+      "com.typesafe.akka" %% "akka-contrib" % akkaVersion,
+      "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
+      "org.scalatest" %% "scalatest" % "3.0.0" % "test"
     ),
     // make sure that MultiJvm test are compiled by the default test compilation
     compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (compile in Test),
@@ -26,7 +26,7 @@ val project = Project(
     // make sure that MultiJvm tests are executed by the default test target,
     // and combine the results from ordinary test and multi-jvm tests
     executeTests in Test <<= (executeTests in Test, executeTests in MultiJvm) map {
-      case (testResults, multiNodeResults)  =>
+      case (testResults, multiNodeResults) =>
         val overall =
           if (testResults.overall.id < multiNodeResults.overall.id)
             multiNodeResults.overall

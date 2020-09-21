@@ -1,22 +1,15 @@
 package aia.persistence.rest
 
-import com.typesafe.config.Config
-
-import scala.concurrent.duration._
-import scala.concurrent.Future
-
+import aia.persistence._
 import akka.actor._
 import akka.event.Logging
-import akka.io.IO
-import akka.pattern.ask
-import akka.util.Timeout
-
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
-import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import akka.util.Timeout
+import com.typesafe.config.Config
 
-import aia.persistence._
+import scala.concurrent.Future
 
 trait ShoppersServiceSupport extends RequestTimeout {
   def startService(shoppers: ActorRef)(implicit system: ActorSystem) = {
@@ -25,18 +18,18 @@ trait ShoppersServiceSupport extends RequestTimeout {
     val host = settings.http.host
     val port = settings.http.port
 
-    implicit val ec = system.dispatcher  //bindAndHandle requires an implicit ExecutionContext
+    implicit val ec = system.dispatcher //bindAndHandle requires an implicit ExecutionContext
 
     val api = new ShoppersService(shoppers, system, requestTimeout(config)).routes // the RestApi provides a Route
- 
+
     implicit val materializer = ActorMaterializer()
     val bindingFuture: Future[ServerBinding] =
       Http().bindAndHandle(api, host, port)
-   
-    val log =  Logging(system.eventStream, "shoppers")
+
+    val log = Logging(system.eventStream, "shoppers")
     bindingFuture.map { serverBinding =>
       log.info(s"Shoppers API bound to ${serverBinding.localAddress} ")
-    }.onFailure { 
+    }.onFailure {
       case ex: Exception =>
         log.error(ex, "Failed to bind to {}:{}!", host, port)
         system.terminate()
@@ -45,7 +38,9 @@ trait ShoppersServiceSupport extends RequestTimeout {
 }
 
 trait RequestTimeout {
+
   import scala.concurrent.duration._
+
   def requestTimeout(config: Config): Timeout = {
     val t = config.getString("akka.http.server.request-timeout")
     val d = Duration(t)

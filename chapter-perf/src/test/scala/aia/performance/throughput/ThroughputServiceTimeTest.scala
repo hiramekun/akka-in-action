@@ -1,12 +1,6 @@
 package aia.performance.throughput
 
-import akka.testkit.TestProbe
-import akka.actor.{Props, ActorSystem}
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
-import akka.routing.RoundRobinPool
-import com.typesafe.config.ConfigFactory
-import aia.performance.{ProcessCPURequest, SystemMessage, ProcessRequest}
-import concurrent.duration._
+import scala.concurrent.duration._
 
 class ThroughputServiceTimeTest extends WordSpecLike
   with BeforeAndAfterAll

@@ -1,14 +1,6 @@
 package aia.performance.dispatcher
 
-import akka.testkit.TestProbe
-import akka.actor.{Props, ActorSystem}
-import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
-import akka.routing.RoundRobinPool
-import aia.performance.monitor.ActorStatistics
-import com.typesafe.config.ConfigFactory
-import aia.performance.{SystemMessage, ProcessRequest, PrintMsg}
-import aia.performance.monitor.{MonitorActor, MailboxStatistics, ActorStatistics, MonitorStatisticsActor}
-import concurrent.duration._
+import scala.concurrent.duration._
 
 class DispatcherSeparateTest extends WordSpecLike
   with BeforeAndAfterAll
@@ -18,10 +10,10 @@ class DispatcherSeparateTest extends WordSpecLike
   implicit val system = ActorSystem("DispatcherTest", configuration)
 
   "System" must {
-     "fails to perform seperate dispatchers" in {
-       //val nrMessages = 15000
-       val nrMessages = 6000
-       val nrWorkers = 100
+    "fails to perform seperate dispatchers" in {
+      //val nrMessages = 15000
+      val nrMessages = 6000
+      val nrWorkers = 100
       val statDuration = 15000 millis
 
       val printer = system.actorOf(Props[PrintMsg], "Printer-dispatcher")

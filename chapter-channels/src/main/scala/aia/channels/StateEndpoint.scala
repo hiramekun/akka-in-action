@@ -1,9 +1,11 @@
 package aia.channels
 
-import akka.actor.Actor
 import java.util.Date
 
+import akka.actor.Actor
+
 case class StateEvent(time: Date, state: String)
+
 case class Connection(time: Date, connected: Boolean)
 
 class StateEndpoint extends Actor {
@@ -32,8 +34,7 @@ class SystemMonitor extends Actor {
 }
 
 
-import akka.event.ActorEventBus
-import akka.event.{ LookupClassification, EventBus }
+import akka.event.{ActorEventBus, EventBus, LookupClassification}
 
 class OrderMessageBus extends EventBus
   with LookupClassification
@@ -41,6 +42,7 @@ class OrderMessageBus extends EventBus
 
   type Event = Order
   type Classifier = Boolean
+
   def mapSize = 2
 
   protected def classify(event: OrderMessageBus#Event) = {
@@ -58,7 +60,9 @@ class MyEventBus extends EventBus with LookupClassification
   with ActorEventBus {
 
   type Event = AnyRef
+
   def mapSize = 2
+
   type Classifier = String
 
   protected def classify(event: MyEventBus#Event) = {

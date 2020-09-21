@@ -1,31 +1,36 @@
 package aia.cluster
 package words
 
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.cluster.routing._
 import akka.routing._
+
+import scala.concurrent.duration._
 
 
 object JobMaster {
   def props = Props(new JobMaster)
 
   case class StartJob(name: String, text: List[String])
+
   case class Enlist(worker: ActorRef)
 
   case object NextTask
+
   case class TaskResult(map: Map[String, Int])
 
   case object Start
+
   case object MergeResults
+
 }
 
 class JobMaster extends Actor
-                   with ActorLogging
-                   with CreateWorkerRouter {
-  import JobReceptionist.WordCount
+  with ActorLogging
+  with CreateWorkerRouter {
+
   import JobMaster._
+  import JobReceptionist.WordCount
   import JobWorker._
   import context._
 
@@ -55,10 +60,10 @@ class JobMaster extends Actor
               cancellable: Cancellable): Receive = {
     case Enlist(worker) =>
       watch(worker)
-      workers  = workers + worker
+      workers = workers + worker
 
     case NextTask =>
-      if(textParts.isEmpty) {
+      if (textParts.isEmpty) {
         sender() ! WorkLoadDepleted
       } else {
         sender() ! Task(textParts.head, self)
@@ -70,7 +75,7 @@ class JobMaster extends Actor
       intermediateResult = intermediateResult :+ countMap
       workReceived = workReceived + 1
 
-      if(textParts.isEmpty && workGiven == workReceived) {
+      if (textParts.isEmpty && workGiven == workReceived) {
         cancellable.cancel()
         become(finishing(jobName, receptionist, workers))
         setReceiveTimeout(Duration.Undefined)
@@ -78,7 +83,7 @@ class JobMaster extends Actor
       }
 
     case ReceiveTimeout =>
-      if(workers.isEmpty) {
+      if (workers.isEmpty) {
         log.info(s"No workers responded in time. Cancelling job $jobName.")
         stop(self)
       } else setReceiveTimeout(Duration.Undefined)
@@ -112,7 +117,8 @@ class JobMaster extends Actor
 }
 
 
-trait CreateWorkerRouter { this: Actor =>
+trait CreateWorkerRouter {
+  this: Actor =>
   def createWorkerRouter: ActorRef = {
     context.actorOf(
       ClusterRouterPool(BroadcastPool(10), ClusterRouterPoolSettings(
